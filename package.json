@@ -1,12 +1,12 @@
 {
     "name": "mod-synth",
     "version": "1.0.0",
-    "description": "modular synth",
+    "description": "MOD is a new Chrome Experiment where you can create your own modular synthesizer, or emulate different synths by simply drag and drop components.",
     "author": "Lowww Ltd",
-    "license": "",
+    "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "git@bitbucket.org:holler/blackmores-concept-store.git"
+        "url": "git@github.com:LowwwLtd/mod-synth.io.git"
     },
     "dependencies": {
 

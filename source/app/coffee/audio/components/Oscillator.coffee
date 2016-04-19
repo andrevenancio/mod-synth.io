@@ -35,7 +35,7 @@ class Oscillator extends Component
         oscillator.originalFrequency = frequency
         oscillator.nofg = nofg
         oscillator.frequency.cancelScheduledValues now
-        oscillator.frequency.setTargetAtTime frequency * @parameters.octave * Audio.CUR_OCTAVE[Audio.OCTAVE_STEP], 0, @parameters.portamento / 1000.0
+        oscillator.frequency.setTargetAtTime frequency * @parameters.octave * Audio.CUR_OCTAVE[Audio.OCTAVE_STEP], 0, @parameters.portamento / 1000.0 || 0.001
         oscillator.detune.setValueAtTime @parameters.detune, 0
         oscillator.connect nofg
         oscillator.start now
@@ -77,7 +77,7 @@ class Oscillator extends Component
         else
             # frequency
             @activeOscillators[0].frequency.cancelScheduledValues now
-            @activeOscillators[0].frequency.setTargetAtTime frequency * @parameters.octave * Audio.CUR_OCTAVE[Audio.OCTAVE_STEP], 0, @parameters.portamento / 1000.0
+            @activeOscillators[0].frequency.setTargetAtTime frequency * @parameters.octave * Audio.CUR_OCTAVE[Audio.OCTAVE_STEP], 0, @parameters.portamento / 1000.0 || 0.001
         null
 
     stop: (frequency) ->
@@ -103,7 +103,7 @@ class Oscillator extends Component
                 null
             else
                 @activeOscillators[0].frequency.cancelScheduledValues now
-                @activeOscillators[0].frequency.setTargetAtTime @active[@active.length-1] * @parameters.octave, 0, @parameters.portamento / 1000
+                @activeOscillators[0].frequency.setTargetAtTime @active[@active.length-1] * @parameters.octave, 0, @parameters.portamento / 1000.0 || 0.001
         null
 
     @property 'type',

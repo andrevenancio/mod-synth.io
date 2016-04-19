@@ -1,0 +1,108 @@
+.tour--outer-holder
+    position: absolute
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+    z-index: 1000
+
+    visibility: hidden
+    opacity: 0
+
+    .tour--dark-holder
+        position: absolute
+        top: 0
+        left: 0
+        width: 100%
+        height: 100%
+        opacity: 0
+        background-color: #000000
+
+    .tour--instructions-holder
+        display: table
+        position: absolute
+        top: 50%
+        left: 50%
+        width: 60%
+        height: 200px
+        margin-left: -30%
+        margin-top: -100px
+
+        .tour--instructions-inner
+            display: table-cell
+            vertical-align: middle
+            color: white
+            font-size: 28px
+            font-family: 'sofia_prolight'
+            text-align: center
+
+    .tour--inner-holder
+        position: absolute
+        top: 0
+        left: 0
+        width: 80px
+        height: 80px
+
+        visibility: hidden
+        opacity: 0
+
+        .tour--circle
+            position: absolute
+            width: 100%
+            height: 100%
+            border-radius: 100%
+            background-color: rgba(0, 0, 0, 0)
+            border: 4px solid white
+            opacity: 0.2
+            cursor: pointer
+            animation: glow 1.5s infinite ease-out
+
+    .tour--get-started
+        position: absolute
+        bottom: 0%
+        left: 50%
+        width: 200px
+        height: 64px
+        margin-left: -100px
+        margin-bottom: -27px
+        background-color: #4A00FF
+        color: white
+        text-align: center
+        line-height: 64px
+        text-transform: uppercase
+        cursor: pointer
+
+        visibility: hidden
+        opacity: 0
+
+    .nav
+        position: absolute
+        bottom: 80px
+        left: 0
+        font-size: 0
+        text-align: center
+        width: 100%
+
+        div
+            display: inline-block
+            width: 10px
+            height: 10px
+            border-radius: 100%
+            text-indent: -9999px
+            margin: 0 5px
+            background-color: rgba(255, 255, 255, 0.3)
+            transition: background-color 0.3s ease-in-out
+
+            &.selected
+                background-color: rgba(255, 255, 255, 1)
+
+@keyframes glow
+    0%
+        opacity: 0.2
+        transform: scale(0.7)
+    50%
+        opacity: 0.6
+        transform: scale(1)
+    100%
+        opacity: 0.2
+        transform: scale(0.7)

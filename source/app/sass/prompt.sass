@@ -1,0 +1,91 @@
+.prompt--holder
+    position: absolute
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+    z-index: 1000
+    background-color: rgba(0, 0, 0, 0.8)
+
+    visibility: hidden
+    opacity: 0
+
+    .prompt--holder-window
+        position: absolute
+        top: 50%
+        left: 50%
+        width: 500px
+        -webkit-transform: translateX(-50%) translateY(-50%)
+        -moz-transform: translateX(-50%) translateY(-50%)
+        -ms-transform: translateX(-50%) translateY(-50%)
+        -o-transform: translateX(-50%) translateY(-50%)
+        transform: translateX(-50%) translateY(-50%)
+        background-color: #222222
+        padding: 35px
+        border-left: 4px solid #4A00FF
+
+        .prompt--holder-message,
+        .prompt--holder-input,
+        .prompt--holder-input-validation,
+        .prompt--holder-buttons
+            display: block
+            float: left
+            width: 100%
+            font-family: 'sofia_prolight'
+            color: #ffffff
+            text-rendering: geometricPrecision
+            -webkit-font-smoothing: antialiased
+
+            button
+                font-family: 'sofia_prolight'
+                color: #ffffff
+                text-rendering: geometricPrecision
+                -webkit-font-smoothing: antialiased
+
+        .prompt--holder-message
+            margin-bottom: 20px
+            font-size: 20px
+            text-transform: uppercase
+
+        .prompt--holder-input
+            margin-bottom: 10px
+            font-size: 16px
+            outline: none
+            background: transparent
+            border: none
+            color: #646464
+            border-bottom: 2px solid #4E4E4E
+            line-height: 40px
+            transition: all 0.3s ease-out
+
+            &:focus
+                color: #fff
+                border-bottom: 2px solid #fff
+
+        .prompt--holder-input-validation
+            margin: 0
+            margin-bottom: 10px
+            color: #F21141
+            font-size: 12px
+            text-rendering: geometricPrecision
+            -webkit-font-smoothing: antialiased
+
+        .prompt--holder-buttons
+            text-align: right
+            margin-top: 10px
+
+            button
+                outline: none
+                height: 44px
+                padding: 0 10px
+                background: transparent
+                border: 0
+                text-transform: uppercase
+                color: #646464
+                font-size: 16px
+                cursor: pointer
+                text-rendering: geometricPrecision
+                -webkit-font-smoothing: antialiased
+
+                &:hover
+                    color: #ffffff

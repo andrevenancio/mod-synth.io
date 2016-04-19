@@ -1,0 +1,219 @@
+@font-face {
+  font-family: "sofia_prolight";
+  src: url("/fonts/sofiapro_light_macroman/SofiaProLight-webfont.eot");
+  src: url("/fonts/sofiapro_light_macroman/SofiaProLight-webfont.eot?#iefix") format("embedded-opentype"), url("/fonts/sofiapro_light_macroman/SofiaProLight-webfont.woff2") format("woff2"), url("/fonts/sofiapro_light_macroman/SofiaProLight-webfont.woff") format("woff"), url("/fonts/sofiapro_light_macroman/SofiaProLight-webfont.ttf") format("truetype"), url("/fonts/sofiapro_light_macroman/SofiaProLight-webfont.svg#letter_gothic_fsregular") format("svg");
+  font-weight: normal;
+  font-style: normal; }
+@font-face {
+  font-family: "letter_gothic_fsregular";
+  src: url("../fonts/lettergothicfs_regular_macroman/LetterGothic-Regular-webfont.eot");
+  src: url("../fonts/lettergothicfs_regular_macroman/LetterGothic-Regular-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/lettergothicfs_regular_macroman/LetterGothic-Regular-webfont.woff2") format("woff2"), url("../fonts/lettergothicfs_regular_macroman/LetterGothic-Regular-webfont.woff") format("woff"), url("../fonts/lettergothicfs_regular_macroman/LetterGothic-Regular-webfont.ttf") format("truetype"), url("../fonts/lettergothicfs_regular_macroman/LetterGothic-Regular-webfont.svg#letter_gothic_fsregular") format("svg");
+  font-weight: normal;
+  font-style: normal; }
+.prompt--holder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.8);
+  visibility: hidden;
+  opacity: 0; }
+  .prompt--holder .prompt--holder-window {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 500px;
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -ms-transform: translateX(-50%) translateY(-50%);
+    -o-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+    background-color: #222222;
+    padding: 35px;
+    border-left: 4px solid #4A00FF; }
+    .prompt--holder .prompt--holder-window .prompt--holder-message,
+    .prompt--holder .prompt--holder-window .prompt--holder-input,
+    .prompt--holder .prompt--holder-window .prompt--holder-input-validation,
+    .prompt--holder .prompt--holder-window .prompt--holder-buttons {
+      display: block;
+      float: left;
+      width: 100%;
+      font-family: "sofia_prolight";
+      color: #ffffff;
+      text-rendering: geometricPrecision;
+      -webkit-font-smoothing: antialiased; }
+      .prompt--holder .prompt--holder-window .prompt--holder-message button,
+      .prompt--holder .prompt--holder-window .prompt--holder-input button,
+      .prompt--holder .prompt--holder-window .prompt--holder-input-validation button,
+      .prompt--holder .prompt--holder-window .prompt--holder-buttons button {
+        font-family: "sofia_prolight";
+        color: #ffffff;
+        text-rendering: geometricPrecision;
+        -webkit-font-smoothing: antialiased; }
+    .prompt--holder .prompt--holder-window .prompt--holder-message {
+      margin-bottom: 20px;
+      font-size: 20px;
+      text-transform: uppercase; }
+    .prompt--holder .prompt--holder-window .prompt--holder-input {
+      margin-bottom: 10px;
+      font-size: 16px;
+      outline: none;
+      background: transparent;
+      border: none;
+      color: #646464;
+      border-bottom: 2px solid #4E4E4E;
+      line-height: 40px;
+      transition: all 0.3s ease-out; }
+      .prompt--holder .prompt--holder-window .prompt--holder-input:focus {
+        color: #fff;
+        border-bottom: 2px solid #fff; }
+    .prompt--holder .prompt--holder-window .prompt--holder-input-validation {
+      margin: 0;
+      margin-bottom: 10px;
+      color: #F21141;
+      font-size: 12px;
+      text-rendering: geometricPrecision;
+      -webkit-font-smoothing: antialiased; }
+    .prompt--holder .prompt--holder-window .prompt--holder-buttons {
+      text-align: right;
+      margin-top: 10px; }
+      .prompt--holder .prompt--holder-window .prompt--holder-buttons button {
+        outline: none;
+        height: 44px;
+        padding: 0 10px;
+        background: transparent;
+        border: 0;
+        text-transform: uppercase;
+        color: #646464;
+        font-size: 16px;
+        cursor: pointer;
+        text-rendering: geometricPrecision;
+        -webkit-font-smoothing: antialiased; }
+        .prompt--holder .prompt--holder-window .prompt--holder-buttons button:hover {
+          color: #ffffff; }
+
+.tour--outer-holder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  visibility: hidden;
+  opacity: 0; }
+  .tour--outer-holder .tour--dark-holder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    background-color: #000000; }
+  .tour--outer-holder .tour--instructions-holder {
+    display: table;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 60%;
+    height: 200px;
+    margin-left: -30%;
+    margin-top: -100px; }
+    .tour--outer-holder .tour--instructions-holder .tour--instructions-inner {
+      display: table-cell;
+      vertical-align: middle;
+      color: white;
+      font-size: 28px;
+      font-family: "sofia_prolight";
+      text-align: center; }
+  .tour--outer-holder .tour--inner-holder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 80px;
+    height: 80px;
+    visibility: hidden;
+    opacity: 0; }
+    .tour--outer-holder .tour--inner-holder .tour--circle {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 100%;
+      background-color: transparent;
+      border: 4px solid white;
+      opacity: 0.2;
+      cursor: pointer;
+      animation: glow 1.5s infinite ease-out; }
+  .tour--outer-holder .tour--get-started {
+    position: absolute;
+    bottom: 0%;
+    left: 50%;
+    width: 200px;
+    height: 64px;
+    margin-left: -100px;
+    margin-bottom: -27px;
+    background-color: #4A00FF;
+    color: white;
+    text-align: center;
+    line-height: 64px;
+    text-transform: uppercase;
+    cursor: pointer;
+    visibility: hidden;
+    opacity: 0; }
+  .tour--outer-holder .nav {
+    position: absolute;
+    bottom: 80px;
+    left: 0;
+    font-size: 0;
+    text-align: center;
+    width: 100%; }
+    .tour--outer-holder .nav div {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 100%;
+      text-indent: -9999px;
+      margin: 0 5px;
+      background-color: rgba(255, 255, 255, 0.3);
+      transition: background-color 0.3s ease-in-out; }
+      .tour--outer-holder .nav div.selected {
+        background-color: white; }
+
+@keyframes glow {
+  0% {
+    opacity: 0.2;
+    transform: scale(0.7); }
+  50% {
+    opacity: 0.6;
+    transform: scale(1); }
+  100% {
+    opacity: 0.2;
+    transform: scale(0.7); } }
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%; }
+
+body {
+  overflow: hidden;
+  background-color: #1A1A1A;
+  font-family: "sofia_prolight";
+  color: #ffffff; }
+
+* {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  box-sizing: border-box;
+  -webkit-touch-callout: none;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased; }
+
+canvas {
+  display: block; }
+
+/*# sourceMappingURL=app.css.map */

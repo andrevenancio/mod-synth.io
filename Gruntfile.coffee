@@ -59,7 +59,7 @@ module.exports = (grunt) ->
                     dead_code: true
                     drop_debugger: true
                     unused: true
-                    drop_console: true
+                    drop_console: false
                 screwIE8: true
             app:
                 src: 'deploy/js/app.js',

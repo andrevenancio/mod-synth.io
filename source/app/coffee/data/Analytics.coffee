@@ -1,7 +1,7 @@
 class Analytics
 
     @event: (category, type, id) ->
-        if window.ga and location.hostname is not 'localhost'
+        if window.ga
             if id
                 ga 'send', 'event', category, type, id
             else

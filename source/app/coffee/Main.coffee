@@ -8,7 +8,7 @@ do me = ->
         '\nDEVELOPMENT\nhttp://twitter.com/andrevenancio'
         '\n\nDESIGN\nhttp://twitter.com/janoskoos'
         '\n\nFollow us on twitter for new updates!\nhttp://twitter.com/modsynth_io'
-        '\n\nSOURCE:\nhttps://github.com/LowwwLtd/mod-synth.io'
+        '\n\n\nwe support open source:\nhttps://github.com/LowwwLtd/mod-synth.io'
     ]
     console.log.apply console, args
     window.app = new App()

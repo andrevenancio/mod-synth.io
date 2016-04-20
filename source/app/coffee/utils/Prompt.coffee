@@ -18,7 +18,7 @@ class Prompt
         #     question: 'Patch name:'
         #     input: true
         #     onConfirm: (data) =>
-        #         Services.api.patches.set_patch data
+        #         Services.api.patches.save data
         #         null
         # }
 

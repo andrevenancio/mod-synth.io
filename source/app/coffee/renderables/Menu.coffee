@@ -32,6 +32,7 @@ class Menu extends PIXI.Container
         @addChild @select
 
         App.MIDI.add @onMidiStateChange
+        App.PRESET_CHANGED.add @onPresetChanged
 
         @build()
 
@@ -171,7 +172,6 @@ class Menu extends PIXI.Container
 
     openSubmenu: (index) =>
         @selectIndex = index
-        console.log 'open submenu', index
         @highlightMenu()
 
         # hide all tabs and show only the current
@@ -194,4 +194,13 @@ class Menu extends PIXI.Container
             App.TOGGLE_MENU.dispatch { width: 0 }
         else if e.state is 'connected'
             @midi.visible = true
+        null
+
+    onPresetChanged: =>
+        total = Object.keys(Session.patch.presets).length
+        if total > 0
+            @presets.count.visible = true
+            @presets.count.text = total
+        else
+            @presets.count.visible = false
         null

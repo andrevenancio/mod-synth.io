@@ -7,17 +7,23 @@ class Session
     # default patch data
     @default: {
         uid: null
-        author: null
         name: null
+        author: null
+        author_name: null
         date: null
+        preset: null
+        presets: []
     }
 
     # current patch data
     @patch: {
         uid: null
-        author: null
         name: null
+        author: null
+        author_name: null
         date: null
+        preset: null
+        presets: []
     }
 
     @SETTINGS = {}
@@ -25,12 +31,9 @@ class Session
     # active midi inputs
     @MIDI: {}
 
-    @generateUID: ->
-        return ('0000' + (Math.random() * Math.pow(36, 4) << 0).toString(36)).slice(-4)
-
     @ADD: (component) ->
         # component unique id
-        id = component.component_session_uid || Session.generateUID()
+        id = component.component_session_uid || Services.GENERATE_UID(16)
 
         # assigns component to session settings
         Session.SETTINGS[id] = component
@@ -113,3 +116,6 @@ class Session
                     c.settings.mute = if isSolo is true then true else false
                 App.SETTINGS_CHANGE.dispatch { component: c.component_session_uid }
         null
+
+    @DUPLICATE_OBJECT: (obj) ->
+        return JSON.parse(JSON.stringify(obj))

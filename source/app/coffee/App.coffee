@@ -14,6 +14,7 @@ class App extends PixiBase
 
     @LOAD_PATCH: new signals.Signal()
     @PATCH_CHANGED: new signals.Signal()
+    @PRESET_CHANGED: new signals.Signal()
 
     # add/remove components
     @ADD: new signals.Signal()
@@ -101,7 +102,6 @@ class App extends PixiBase
         AppData.PIXI.stage.addChild @controls
 
         if AppData.SHOW_TOUR
-            @loadPatch 'default', true
             @tour.start()
         else
             uid = Cookies.getCookie('patch') || 'default'
@@ -196,10 +196,9 @@ class App extends PixiBase
         , 1000
         null
 
-    loadPatch: (uid, skip = false) =>
-
+    loadPatch: (uid) =>
         # loop through data and add components with delay
-        Services.api.patches.load_patch uid, (snapshot) =>
+        Services.api.patches.load uid, (snapshot) =>
             data = snapshot.val()
 
             if data is null
@@ -209,11 +208,13 @@ class App extends PixiBase
 
             Session.patch.uid = uid
             Session.patch.author = data.author
-            Session.patch.name = data.name
-            Session.patch.date = data.date
+            Session.patch.author_name = data.author_name
             Session.patch.components = data.components
+            Session.patch.date = data.date
+            Session.patch.name = data.name
+            Session.patch.preset = data.preset
+            Session.patch.presets = {}
 
-            return if skip is true
             App.PATCH_CHANGED.dispatch()
 
             i = 0
@@ -233,7 +234,7 @@ class App extends PixiBase
             Session.SETTINGS[data.component_session_uid].x = data.x
         if data.y
             Session.SETTINGS[data.component_session_uid].y = data.y
-        Services.api.patches.update_patch data.component_session_uid
+        Services.api.patches.update()
         null
 
     onToggle: (value) =>

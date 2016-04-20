@@ -10,6 +10,6 @@ do me = ->
         '\n\nFollow us on twitter for new updates!\nhttp://twitter.com/modsynth_io'
         '\n\n\nwe support open source:\nhttps://github.com/LowwwLtd/mod-synth.io'
     ]
-    console.log.apply console, args
+    # console.log.apply console, args
     window.app = new App()
     null

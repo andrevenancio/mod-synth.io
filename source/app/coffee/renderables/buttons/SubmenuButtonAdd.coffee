@@ -27,7 +27,7 @@ class SubmenuButtonAdd extends PIXI.Container
         @graphics.drawRect 0, 0, AppData.SUBMENU_PANNEL/2, AppData.SUBMENU_PANNEL/2
         @addChild @graphics
 
-        textFormat = JSON.parse(JSON.stringify(AppData.TEXTFORMAT.MENU_SUBTITLE));
+        textFormat = Session.DUPLICATE_OBJECT AppData.TEXTFORMAT.MENU_SUBTITLE
         textFormat.align = 'center'
         textFormat.wordWrap = true;
         textFormat.wordWrapWidth = 300 * AppData.RATIO

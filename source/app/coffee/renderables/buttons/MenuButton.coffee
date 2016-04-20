@@ -31,6 +31,16 @@ class MenuButton extends PIXI.Container
         @img.y = AppData.MENU_PANNEL/2
         @addChild @img
 
+        @count = new PIXI.Text '0', AppData.TEXTFORMAT.MENU_DESCRIPTION
+        @count.tint = 0x646464
+        @count.scale.x = @count.scale.y = 0.5
+        @count.anchor.x = 1
+        @count.anchor.y = 0
+        @count.position.x = AppData.MENU_PANNEL - 10 * AppData.RATIO
+        @count.position.y = 10 * AppData.RATIO
+        @count.visible = false
+        @addChild @count
+
         @hint = new PIXI.Text hint.toUpperCase(), AppData.TEXTFORMAT.HINT
         @hint.anchor.x = 0.5
         @hint.anchor.y = 1

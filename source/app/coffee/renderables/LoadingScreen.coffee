@@ -110,24 +110,31 @@ class LoadingScreen extends PIXI.Sprite
         else
             # otherwise we read the cookie
             AppData.SHOW_MENU_PANNEL = if menu is 'show' then true else false
-            AppData.SHOW_KEYBOARD_PANNEL = if keyboard is 'show' then true else true
+            AppData.SHOW_KEYBOARD_PANNEL = if keyboard is 'show' then true else false
             AppData.SHOW_LABELS = if labels is 'show' then true else false
 
         # stored default patch settings and loads the patch in cookie
-        Services.api.patches.load_patch 'default', (snapshot) =>
+        Services.api.patches.load 'default', (snapshot) =>
             data = snapshot.val()
 
             Session.default.uid = 'default'
             Session.default.author = data.author
-            Session.default.name = data.name
-            Session.default.date = data.date
+            Session.default.author_name = data.author_name
             Session.default.components = data.components
+            Session.default.date = data.date
+            Session.default.name = data.name
+            Session.default.preset = data.preset
+            Session.default.presets = {}
 
             Session.patch.uid = 'default'
             Session.patch.author = data.author
-            Session.patch.name = data.name
-            Session.patch.date = data.date
+            Session.patch.author_name = data.author_name
             Session.patch.components = data.components
+            Session.patch.date = data.date
+            Session.patch.name = data.name
+            Session.patch.preset = data.preset
+            Session.patch.presets = {}
+
             @end()
             null
         null

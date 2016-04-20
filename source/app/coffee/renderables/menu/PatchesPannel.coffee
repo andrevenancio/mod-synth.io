@@ -29,7 +29,7 @@ class PatchesPannel extends Pannel
             @button_NEW.y = AppData.MENU_PANNEL
             @addChild @button_NEW
 
-            @saved = new PIXI.Text 'YOUR PATCHES', AppData.TEXTFORMAT.MENU_SUBTITLE
+            @saved = new PIXI.Text 'AVAILABLE PATCHES', AppData.TEXTFORMAT.MENU_SUBTITLE
             @saved.tint = 0x646464
             @saved.scale.x = @saved.scale.y = 0.5
             @saved.position.x = AppData.PADDING
@@ -96,9 +96,7 @@ class PatchesPannel extends Pannel
 
                 setTimeout =>
                     # saves new patch
-                    Services.api.patches.set_patch data, (d) ->
-                        Cookies.setCookie 'patch', d.val().uid
-                        null
+                    Services.api.patches.save data
 
                     # checks for all user patches
                     @checkUserPatches()
@@ -127,7 +125,12 @@ class PatchesPannel extends Pannel
         null
 
     rebuildUserPatches: (snapshot) =>
-        @build snapshot.val()
+        value = snapshot.val()
+        # if value
+            # console.log 'a procurar', value, Session.patch.uid, value[Session.patch.uid]
+            # Services.presets.loadAll value[Session.patch.uid].preset
+        # console.log 'rebuild patches', value
+        @build value
         null
 
     attachButtonClick: (bt, uid) =>
@@ -145,7 +148,7 @@ class PatchesPannel extends Pannel
                 App.PROMPT.dispatch {
                     question: 'Are you sure you want to delete "' + bt.label.text + '"?'
                     onConfirm: =>
-                        Services.api.patches.delete_patch uid, @checkUserPatches
+                        Services.api.patches.remove uid, @checkUserPatches
                         null
                 }
                 null

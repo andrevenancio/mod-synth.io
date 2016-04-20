@@ -11,7 +11,7 @@ class Volume extends Slider
             max: 0
         }
 
-        @percentage = MathUtils.map(Session.SETTINGS[@component_session_uid].settings.volume, @range.min, @range.max, 0, 100, true)
+        @percentage = MathUtils.map(Session.patch.presets[Session.patch.preset][@component_session_uid].volume, @range.min, @range.max, 0, 100, true)
 
         @title = new PIXI.Text 'VOLUME', AppData.TEXTFORMAT.SETTINGS_LABEL
         @title.scale.x = @title.scale.y = 0.5
@@ -55,18 +55,18 @@ class Volume extends Slider
 
     onSettingsChange: (event) =>
         if event.component is @component_session_uid
-            switch Session.SETTINGS[@component_session_uid].settings.volume
+            switch Session.patch.presets[Session.patch.preset][@component_session_uid].volume
                 when @range.min
                     @value.text = '-  '
                     @icon.visible = true
                     @unit.x = @icon.x + @icon.width
                 else
-                    @value.text = Session.SETTINGS[@component_session_uid].settings.volume
+                    @value.text = Session.patch.presets[Session.patch.preset][@component_session_uid].volume
                     @icon.visible = false
                     @unit.x = @value.x + @value.width / 2
         null
 
     onUpdate: ->
-        Session.SETTINGS[@component_session_uid].settings.volume = MathUtils.map(@percentage, 0, 100, @range.min, @range.max, true)
+        Session.patch.presets[Session.patch.preset][@component_session_uid].volume = MathUtils.map(@percentage, 0, 100, @range.min, @range.max, true)
         App.SETTINGS_CHANGE.dispatch { component: @component_session_uid }
         null

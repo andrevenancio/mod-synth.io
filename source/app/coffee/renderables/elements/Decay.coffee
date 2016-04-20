@@ -11,7 +11,7 @@ class Decay extends Slider
             max: 100
         }
 
-        @percentage = MathUtils.map(Session.SETTINGS[@component_session_uid].settings.decay, @range.min, @range.max, 0, 100, true)
+        @percentage = MathUtils.map(Session.patch.presets[Session.patch.preset][@component_session_uid].decay, @range.min, @range.max, 0, 100, true)
 
         @title = new PIXI.Text 'DECAY', AppData.TEXTFORMAT.SETTINGS_LABEL
         @title.scale.x = @title.scale.y = 0.5
@@ -47,11 +47,11 @@ class Decay extends Slider
 
     onSettingsChange: (event) =>
         if event.component is @component_session_uid
-            @value.text = Session.SETTINGS[@component_session_uid].settings.decay
+            @value.text = Session.patch.presets[Session.patch.preset][@component_session_uid].decay
             @unit.x = @value.x + @value.width / 2
         null
 
     onUpdate: ->
-        Session.SETTINGS[@component_session_uid].settings.decay = MathUtils.map(@percentage, 0, 100, @range.min, @range.max, true)
+        Session.patch.presets[Session.patch.preset][@component_session_uid].decay = MathUtils.map(@percentage, 0, 100, @range.min, @range.max, true)
         App.SETTINGS_CHANGE.dispatch { component: @component_session_uid }
         null

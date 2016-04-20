@@ -18,7 +18,7 @@ class Noises extends Slider
         ]
 
         for i in [0...@possibleValues.length]
-            if Session.SETTINGS[@component_session_uid].settings.noise_type is @possibleValues[i]
+            if Session.patch.presets[Session.patch.preset][@component_session_uid].noise_type is @possibleValues[i]
                 index = i
                 continue
         @percentage = MathUtils.map(index, 0, @possibleValues.length, 0, 100, true)
@@ -42,7 +42,7 @@ class Noises extends Slider
     onEnd: (e) =>
         super e
         if @lastValue is @percentage
-            next = Session.SETTINGS[@component_session_uid].settings.noise_type+1
+            next = Session.patch.presets[Session.patch.preset][@component_session_uid].noise_type+1
             next %= @possibleValues.length
             @percentage = MathUtils.map next, 0, @possibleValues.length-1, 0, 100
             @onUpdate()
@@ -50,10 +50,10 @@ class Noises extends Slider
 
     onSettingsChange: (event) =>
         if event.component is @component_session_uid
-            @texture.texture = @elements[Session.SETTINGS[@component_session_uid].settings.noise_type]
+            @texture.texture = @elements[Session.patch.presets[Session.patch.preset][@component_session_uid].noise_type]
         null
 
     onUpdate: ->
-        Session.SETTINGS[@component_session_uid].settings.noise_type = MathUtils.map @percentage, 0, 100, 0, @possibleValues.length-1, true
+        Session.patch.presets[Session.patch.preset][@component_session_uid].noise_type = MathUtils.map @percentage, 0, 100, 0, @possibleValues.length-1, true
         App.SETTINGS_CHANGE.dispatch { component: @component_session_uid }
         null

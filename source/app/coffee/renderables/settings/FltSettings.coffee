@@ -40,10 +40,10 @@ class FltSettings extends SettingsBase
 
     onSettingsChange: (event) =>
         if event.component is @component_session_uid
-            @bypass.setActive Session.SETTINGS[@component_session_uid].settings.bypass
+            @bypass.setActive Session.patch.presets[Session.patch.preset][@component_session_uid].bypass
         null
 
     handleB: =>
-        Session.SETTINGS[@component_session_uid].settings.bypass = !@bypass.active
+        Session.patch.presets[Session.patch.preset][@component_session_uid].bypass = !@bypass.active
         App.SETTINGS_CHANGE.dispatch { component: @component_session_uid }
         null

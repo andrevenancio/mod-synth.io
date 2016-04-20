@@ -26,20 +26,20 @@ class Pads extends PIXI.Container
         for i in [0...@total]
             pad = new Pad i, @itemArea
             pad.x = (@itemArea * i)
-            pad.setActive Session.SETTINGS[@component_session_uid].settings.pattern[i]
+            pad.setActive Session.patch.presets[Session.patch.preset][@component_session_uid].pattern[i]
             pad.buttonClick = @handlePad
             @addChild pad
         null
 
     handlePad: (index) =>
-        Session.SETTINGS[@component_session_uid].settings.pattern[index] = !@children[index].active
+        Session.patch.presets[Session.patch.preset][@component_session_uid].pattern[index] = !@children[index].active
         App.SETTINGS_CHANGE.dispatch { component: @component_session_uid }
         null
 
     onSettingsChange: (event) =>
         if event.component is @component_session_uid
-            for i in [0...Session.SETTINGS[@component_session_uid].settings.pattern.length]
-                @children[i].setActive Session.SETTINGS[@component_session_uid].settings.pattern[i]
+            for i in [0...Session.patch.presets[Session.patch.preset][@component_session_uid].pattern.length]
+                @children[i].setActive Session.patch.presets[Session.patch.preset][@component_session_uid].pattern[i]
         null
 
     onPadChange: (pad) =>

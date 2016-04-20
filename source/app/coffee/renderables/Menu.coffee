@@ -31,6 +31,8 @@ class Menu extends PIXI.Container
         @select.alpha = 0
         @addChild @select
 
+        App.MIDI.add @onMidiStateChange
+
         @build()
 
     build: ->
@@ -48,16 +50,24 @@ class Menu extends PIXI.Container
         @buttons.push @add
         @addChild @add
 
-        @presets = new MenuButton AppData.ASSETS.sprite.textures['ic-presets-48.png'], 'patches'
-        @presets.buttonClick = =>
+        @patches = new MenuButton AppData.ASSETS.sprite.textures['ic-presets-48.png'], 'patches'
+        @patches.buttonClick = =>
             @openSubmenu 2
+            null
+        @buttons.push @patches
+        @addChild @patches
+
+        @presets = new MenuButton AppData.ASSETS.sprite.textures['ic-presets-48.png'], 'presets'
+        @presets.buttonClick = =>
+            @openSubmenu 3
             null
         @buttons.push @presets
         @addChild @presets
 
         @midi = new MenuButton AppData.ASSETS.sprite.textures['ic-midi.png'], 'midi'
+        @midi.visible = false
         @midi.buttonClick = =>
-            @openSubmenu 3
+            @openSubmenu 4
             null
         @buttons.push @midi
         @addChild @midi
@@ -72,6 +82,7 @@ class Menu extends PIXI.Container
         @tabs.push new LoginPannel('login')
         @tabs.push new AddPannel('add component')
         @tabs.push new PatchesPannel('patches')
+        @tabs.push new PresetsPannel('presets')
         @tabs.push new MidiPannel('midi devices')
 
         for i in [0...@tabs.length]
@@ -160,7 +171,7 @@ class Menu extends PIXI.Container
 
     openSubmenu: (index) =>
         @selectIndex = index
-
+        console.log 'open submenu', index
         @highlightMenu()
 
         # hide all tabs and show only the current
@@ -173,4 +184,14 @@ class Menu extends PIXI.Container
 
         # change to new size
         App.TOGGLE_MENU.dispatch { width: AppData.SUBMENU_PANNEL + AppData.MENU_PANNEL + AppData.MENU_PANNEL_BORDER }
+        null
+
+    onMidiStateChange: (e) =>
+        # only shows menu if user has midi device, if midi device is disconnected, closes menu
+        if e.state is 'disconnected' and e.connection is 'closed'
+            @midi.visible = false
+            AppData.SHOW_MENU_PANNEL = false
+            App.TOGGLE_MENU.dispatch { width: 0 }
+        else if e.state is 'connected'
+            @midi.visible = true
         null

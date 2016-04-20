@@ -45,8 +45,8 @@ class Session
         Session.SETTINGS[id].settings = component.settings || {}
 
         # default X & Y
-        Session.SETTINGS[id].settings.x = if component.settings.x isnt undefined then component.settings.x else 0
-        Session.SETTINGS[id].settings.y = if component.settings.y isnt undefined then component.settings.y else 0
+        Session.SETTINGS[id].x = if component.x isnt undefined then component.x else 0
+        Session.SETTINGS[id].y = if component.y isnt undefined then component.y else 0
 
         if component.type_uid is AppData.COMPONENTS.NSG
             Session.SETTINGS[id].audioCapable          = true

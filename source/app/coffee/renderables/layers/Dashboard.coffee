@@ -143,7 +143,7 @@ class Dashboard extends View
         shape.onAdd()
 
         # attach box2d object to shape (for positioning)
-        shape.box2d = @physics.createCustom( shape.vertices, @center.x + data.settings.x, @center.y + data.settings.y, Box2D.Dynamics.b2Body.b2_dynamicBody );
+        shape.box2d = @physics.createCustom( shape.vertices, @center.x + data.x, @center.y + data.y, Box2D.Dynamics.b2Body.b2_dynamicBody );
         # attached component session id, for clicks logic
         shape.box2d.SetUserData {
             uid: shape.component_session_uid

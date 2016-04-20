@@ -230,9 +230,9 @@ class App extends PixiBase
 
         # save XY locally
         if data.x
-            Session.SETTINGS[data.component_session_uid].settings.x = data.x
+            Session.SETTINGS[data.component_session_uid].x = data.x
         if data.y
-            Session.SETTINGS[data.component_session_uid].settings.y = data.y
+            Session.SETTINGS[data.component_session_uid].y = data.y
         Services.api.patches.update_patch data.component_session_uid
         null
 

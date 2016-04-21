@@ -51,7 +51,7 @@ class Menu extends PIXI.Container
         @buttons.push @add
         @addChild @add
 
-        @patches = new MenuButton AppData.ASSETS.sprite.textures['ic-presets-48.png'], 'patches'
+        @patches = new MenuButton AppData.ASSETS.sprite.textures['ic-patches-48.png'], 'patches'
         @patches.buttonClick = =>
             @openSubmenu 2
             null

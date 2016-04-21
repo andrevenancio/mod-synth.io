@@ -22,9 +22,9 @@ class Lfo extends Component
 
     onSettingsChange: (event) =>
         if event.component is @component_session_uid
-            @type = Audio.WAVE_TYPE[Session.SETTINGS[@component_session_uid].settings.attack.wave_type]
-            @frequency = Session.SETTINGS[@component_session_uid].settings.attack.frequency
-            @depth = MathUtils.map Session.SETTINGS[@component_session_uid].settings.attack.depth, 0, 100, 0, 1
+            @type = Audio.WAVE_TYPE[Session.SETTINGS[@component_session_uid].settings.wave_type]
+            @frequency = Session.SETTINGS[@component_session_uid].settings.frequency
+            @depth = MathUtils.map Session.SETTINGS[@component_session_uid].settings.depth, 0, 100, 0, 1
         null
 
     @property 'type',

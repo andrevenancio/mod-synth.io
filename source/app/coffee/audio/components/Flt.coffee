@@ -32,10 +32,10 @@ class Flt extends Component
 
     onSettingsChange: (event) =>
         if event.component is @component_session_uid
-            @type = Audio.FILTER_TYPE[Session.SETTINGS[@component_session_uid].settings.attack.filter_type]
-            @frequency = Session.SETTINGS[@component_session_uid].settings.attack.frequency
-            @detune = Session.SETTINGS[@component_session_uid].settings.attack.detune
-            @q = Session.SETTINGS[@component_session_uid].settings.attack.q
+            @type = Audio.FILTER_TYPE[Session.SETTINGS[@component_session_uid].settings.filter_type]
+            @frequency = Session.SETTINGS[@component_session_uid].settings.frequency
+            @detune = Session.SETTINGS[@component_session_uid].settings.detune
+            @q = Session.SETTINGS[@component_session_uid].settings.q
         null
 
     @property 'type',

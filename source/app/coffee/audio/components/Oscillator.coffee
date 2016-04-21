@@ -44,7 +44,7 @@ class Oscillator extends Component
         nofg.attackEnd = envAttackEnd
         nofg.gain.cancelScheduledValues now
         nofg.gain.setValueAtTime 0.0, now
-        if Session.SETTINGS[@component_session_uid].settings.attack.mute is false
+        if Session.SETTINGS[@component_session_uid].settings.mute is false
             nofg.gain.linearRampToValueAtTime 1.0, envAttackEnd
             nofg.gain.setTargetAtTime (@sustain*1.0)/100.0, envAttackEnd, (@decay/1000.0)+0.001
 
@@ -52,12 +52,12 @@ class Oscillator extends Component
 
     onSettingsChange: (event) =>
         if event.component is @component_session_uid
-            @poly = Session.SETTINGS[@component_session_uid].settings.attack.poly
-            @type = Audio.WAVE_TYPE[Session.SETTINGS[@component_session_uid].settings.attack.wave_type]
-            @detune = Session.SETTINGS[@component_session_uid].settings.attack.detune
-            @octave = Audio.OCTAVE[Session.SETTINGS[@component_session_uid].settings.attack.octave]
-            @portamento = Session.SETTINGS[@component_session_uid].settings.attack.portamento
-            @setVolume MathUtils.map(Session.SETTINGS[@component_session_uid].settings.attack.volume,  -60, 0, 0, 1)
+            @poly = Session.SETTINGS[@component_session_uid].settings.poly
+            @type = Audio.WAVE_TYPE[Session.SETTINGS[@component_session_uid].settings.wave_type]
+            @detune = Session.SETTINGS[@component_session_uid].settings.detune
+            @octave = Audio.OCTAVE[Session.SETTINGS[@component_session_uid].settings.octave]
+            @portamento = Session.SETTINGS[@component_session_uid].settings.portamento
+            @setVolume MathUtils.map(Session.SETTINGS[@component_session_uid].settings.volume,  -60, 0, 0, 1)
 
         # if there is a settings change of a component in AUX
         if @ENV or @FLT or @PTG or @LFO
@@ -66,7 +66,7 @@ class Oscillator extends Component
         null
 
     start: (frequency) ->
-        # return if Session.SETTINGS[@component_session_uid].settings.attack.mute is true
+        # return if Session.SETTINGS[@component_session_uid].settings.mute is true
         @checkAUX()
 
         now = Audio.CONTEXT.currentTime
@@ -92,7 +92,7 @@ class Oscillator extends Component
 
             if @parameters.poly is true or @active.length is 0
                 rampValue = @getRampValue(0, 1, @activeOscillators[index].nofg.attackStart, @activeOscillators[index].nofg.attackEnd, now)
-                if Session.SETTINGS[@component_session_uid].settings.attack.mute is true
+                if Session.SETTINGS[@component_session_uid].settings.mute is true
                     rampValue = 0
                 @activeOscillators[index].nofg.gain.cancelScheduledValues now
                 @activeOscillators[index].nofg.gain.setValueAtTime rampValue, now

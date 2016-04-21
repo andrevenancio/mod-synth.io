@@ -11,7 +11,7 @@ class Release extends Slider
             max: 100
         }
 
-        @percentage = MathUtils.map(Session.SETTINGS[@component_session_uid].settings.attack.release, @range.min, @range.max, 0, 100, true)
+        @percentage = MathUtils.map(Session.SETTINGS[@component_session_uid].settings.release, @range.min, @range.max, 0, 100, true)
 
         @title = new PIXI.Text 'RELEASE', AppData.TEXTFORMAT.SETTINGS_LABEL
         @title.scale.x = @title.scale.y = 0.5
@@ -47,11 +47,11 @@ class Release extends Slider
 
     onSettingsChange: (event) =>
         if event.component is @component_session_uid
-            @value.text = Session.SETTINGS[@component_session_uid].settings.attack.release
+            @value.text = Session.SETTINGS[@component_session_uid].settings.release
             @unit.x = @value.x + @value.width / 2
         null
 
     onUpdate: ->
-        Session.SETTINGS[@component_session_uid].settings.attack.release = MathUtils.map(@percentage, 0, 100, @range.min, @range.max, true)
+        Session.SETTINGS[@component_session_uid].settings.release = MathUtils.map(@percentage, 0, 100, @range.min, @range.max, true)
         App.SETTINGS_CHANGE.dispatch { component: @component_session_uid }
         null

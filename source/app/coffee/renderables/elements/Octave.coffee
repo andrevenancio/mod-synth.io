@@ -18,7 +18,7 @@ class Octave extends Slider
         ]
 
         for i in [0...@possibleValues.length]
-            if Session.SETTINGS[@component_session_uid].settings.attack.octave is @possibleValues[i]
+            if Session.SETTINGS[@component_session_uid].settings.octave is @possibleValues[i]
                 index = i
                 continue
         @percentage = MathUtils.map(index, 0, @possibleValues.length-1, 0, 100, true)
@@ -48,7 +48,7 @@ class Octave extends Slider
     onEnd: (e) =>
         super e
         if @lastValue is @percentage
-            next = Session.SETTINGS[@component_session_uid].settings.attack.octave+1
+            next = Session.SETTINGS[@component_session_uid].settings.octave+1
             next %= @possibleValues.length
             @percentage = MathUtils.map next, 0, @possibleValues.length-1, 0, 100
             @onUpdate()
@@ -56,11 +56,11 @@ class Octave extends Slider
 
     onSettingsChange: (event) =>
         if event.component is @component_session_uid
-            @value.text = @elements[Session.SETTINGS[@component_session_uid].settings.attack.octave]
+            @value.text = @elements[Session.SETTINGS[@component_session_uid].settings.octave]
             @unit.x = @value.x + @value.width / 2
         null
 
     onUpdate: ->
-        Session.SETTINGS[@component_session_uid].settings.attack.octave = MathUtils.map @percentage, 0, 100, 0, @possibleValues.length-1, true
+        Session.SETTINGS[@component_session_uid].settings.octave = MathUtils.map @percentage, 0, 100, 0, @possibleValues.length-1, true
         App.SETTINGS_CHANGE.dispatch { component: @component_session_uid }
         null

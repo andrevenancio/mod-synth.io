@@ -77,7 +77,7 @@ class Services
                 null
 
             load: (patch_id, callback) ->
-                console.log 'load', patch_id
+                console.log 'firebase load', patch_id
                 patch = Services.PATCHES.child(patch_id)
                 patch.once 'value', callback
                 Services.api.presets.loadAll patch_id

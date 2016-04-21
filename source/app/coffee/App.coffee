@@ -59,12 +59,12 @@ class App extends PixiBase
         AppData.PIXI.stage.removeChild @loading
 
         # creates 2 pixi texts to force font rendering
-        t1 = new PIXI.Text("mod-synth", AppData.TEXTFORMAT.TEST_FONT_1);
+        t1 = new PIXI.Text 'mod-synth', AppData.TEXTFORMAT.TEST_FONT_1
         t1.position.x = 0;
         t1.position.y = -100;
         AppData.PIXI.stage.addChild(t1);
 
-        t2 = new PIXI.Text("mod-synth", AppData.TEXTFORMAT.TEST_FONT_2);
+        t2 = new PIXI.Text 'mod-synth', AppData.TEXTFORMAT.TEST_FONT_2
         t2.position.x = 400;
         t2.position.y = -100;
         AppData.PIXI.stage.addChild(t2);

@@ -42,7 +42,7 @@ class PatternGate extends Component
     scheduleNote: (beatNumber, time) ->
         @notesInQueue.push { note: beatNumber, time: time }
 
-        if @parameters.pattern[beatNumber] is true and Session.patch.presets[Session.patch.preset][@component_session_uid].bypass is false
+        if @parameters.pattern[beatNumber] is true and Session.SETTINGS[@component_session_uid].settings.attack.bypass is false
             @aux.gain.setValueAtTime(1.0, time)
             @aux.gain.linearRampToValueAtTime(0.001, time + 0.1)
             @aux.gain.linearRampToValueAtTime(1.0, time + 0.11)
@@ -86,7 +86,7 @@ class PatternGate extends Component
 
     onSettingsChange: (event) =>
         if event.component is @component_session_uid
-            @pattern = Session.patch.presets[Session.patch.preset][@component_session_uid].pattern
+            @pattern = Session.SETTINGS[@component_session_uid].settings.attack.pattern
         null
 
     @property 'pattern',

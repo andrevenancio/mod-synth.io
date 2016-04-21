@@ -46,10 +46,10 @@ class EnvSettings extends SettingsBase
 
     onSettingsChange: (event) =>
         if event.component is @component_session_uid
-            @bypass.setActive Session.patch.presets[Session.patch.preset][@component_session_uid].bypass
+            @bypass.setActive Session.SETTINGS[@component_session_uid].settings.attack.bypass
         null
 
     handleB: =>
-        Session.patch.presets[Session.patch.preset][@component_session_uid].bypass = !@bypass.active
+        Session.SETTINGS[@component_session_uid].settings.attack.bypass = !@bypass.active
         App.SETTINGS_CHANGE.dispatch { component: @component_session_uid }
         null

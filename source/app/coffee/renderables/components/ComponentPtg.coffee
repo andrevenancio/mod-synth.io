@@ -33,10 +33,10 @@ class ComponentPtg extends ComponentBase
 
     onSettingsChange: (event) =>
         if event.component is @component_session_uid
-            if Session.patch.presets[Session.patch.preset][@component_session_uid].bypass is true
+            if Session.SETTINGS[@component_session_uid].settings.attack.bypass is true
                 @__color = 0x3C3C3C
                 @__alpha = 0.2
-            else if Session.patch.presets[Session.patch.preset][@component_session_uid].bypass is false
+            else if Session.SETTINGS[@component_session_uid].settings.attack.bypass is false
                 @__color = AppData.COLORS[AppData.COMPONENTS.PTG]
                 @__alpha = 1
 
@@ -49,7 +49,7 @@ class ComponentPtg extends ComponentBase
         index = 0
         for i in [0...4]
             for j in [0...4]
-                @graphics.beginFill 0xffffff, if Session.patch.presets[Session.patch.preset][@component_session_uid].pattern[index] is true then 1 else 0.5
+                @graphics.beginFill 0xffffff, if Session.SETTINGS[@component_session_uid].settings.attack.pattern[index] is true then 1 else 0.5
                 @graphics.drawCircle (12 * j) * AppData.RATIO, (12 * i) * AppData.RATIO, 2 * AppData.RATIO
                 @graphics.endFill()
                 index++

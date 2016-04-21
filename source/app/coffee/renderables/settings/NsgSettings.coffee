@@ -34,8 +34,8 @@ class NsgSettings extends SettingsBase
 
     onSettingsChange: (event) =>
         if event.component is @component_session_uid
-            @solo.setActive Session.patch.presets[Session.patch.preset][@component_session_uid].solo
-            @mute.setActive Session.patch.presets[Session.patch.preset][@component_session_uid].mute
+            @solo.setActive Session.SETTINGS[@component_session_uid].settings.attack.solo
+            @mute.setActive Session.SETTINGS[@component_session_uid].settings.attack.mute
         null
 
     handleS: =>
@@ -43,7 +43,7 @@ class NsgSettings extends SettingsBase
         null
 
     handleM: =>
-        return if Session.patch.presets[Session.patch.preset][@component_session_uid].solo is true
-        Session.patch.presets[Session.patch.preset][@component_session_uid].mute = !@mute.active
+        return if Session.SETTINGS[@component_session_uid].settings.attack.solo is true
+        Session.SETTINGS[@component_session_uid].settings.attack.mute = !@mute.active
         App.SETTINGS_CHANGE.dispatch { component: @component_session_uid }
         null

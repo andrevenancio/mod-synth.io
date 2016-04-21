@@ -29,10 +29,10 @@ class ComponentLfo extends ComponentBase
 
     onSettingsChange: (event) =>
         if event.component is @component_session_uid
-            if Session.patch.presets[Session.patch.preset][@component_session_uid].bypass is true
+            if Session.SETTINGS[@component_session_uid].settings.attack.bypass is true
                 @__color = 0x3C3C3C
                 @__alpha = 0.2
-            else if Session.patch.presets[Session.patch.preset][@component_session_uid].bypass is false
+            else if Session.SETTINGS[@component_session_uid].settings.attack.bypass is false
                 @__color = AppData.COLORS[AppData.COMPONENTS.LFO]
                 @__alpha = 1
 
@@ -40,7 +40,7 @@ class ComponentLfo extends ComponentBase
 
         @bg.tint = @__color
 
-        switch Session.patch.presets[Session.patch.preset][@component_session_uid].wave_type
+        switch Session.SETTINGS[@component_session_uid].settings.attack.wave_type
             when AppData.WAVE_TYPE.SINE then @icon.texture = AppData.ASSETS.sprite.textures['ic-wave-sine-48.png']
             when AppData.WAVE_TYPE.TRIANGLE then @icon.texture = AppData.ASSETS.sprite.textures['ic-wave-tri-48.png']
             when AppData.WAVE_TYPE.SQUARE then @icon.texture = AppData.ASSETS.sprite.textures['ic-wave-sq-48.png']

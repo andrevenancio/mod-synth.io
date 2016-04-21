@@ -25,10 +25,10 @@ class ComponentFlt extends ComponentBase
 
     onSettingsChange: (event) =>
         if event.component is @component_session_uid
-            if Session.patch.presets[Session.patch.preset][@component_session_uid].bypass is true
+            if Session.SETTINGS[@component_session_uid].settings.attack.bypass is true
                 @__color = 0x3C3C3C
                 @__alpha = 0.2
-            else if Session.patch.presets[Session.patch.preset][@component_session_uid].bypass is false
+            else if Session.SETTINGS[@component_session_uid].settings.attack.bypass is false
                 @__color = AppData.COLORS[AppData.COMPONENTS.FLT]
                 @__alpha = 1
 

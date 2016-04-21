@@ -24,8 +24,6 @@ class Instrument
         App.NOTE_OFF.add @onNoteOff
 
     onAdd: (data) =>
-        console.log 'preset', Session.patch.preset
-        console.log 'all preset', Session.patch.presets
         Analytics.event 'component', 'add', data.type_uid
         @add data
         null
@@ -87,8 +85,6 @@ class Instrument
             when AppData.COMPONENTS.FLT then component = new Flt data
             when AppData.COMPONENTS.PTG then component = new PatternGate data
             when AppData.COMPONENTS.LFO then component = new Lfo data
-            else
-                return
 
         if component
             if data.audioCapable

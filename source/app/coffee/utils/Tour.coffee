@@ -14,7 +14,7 @@ class Tour
             x: 10
             y: 10
             instructions: 'Click on the menu icon to access your tools and settings'
-            action: @action1
+            action: @action3
         }
 
         # add component
@@ -203,16 +203,15 @@ class Tour
     action3: =>
         component = {
             'type_uid': 1,
-            'settings': {
-                x: -(AppData.WIDTH/2+app.dashboard.x) + 200*AppData.RATIO,
-                y: -(AppData.HEIGHT/2+app.dashboard.y) + 200*AppData.RATIO
-            }
+            x: -(AppData.WIDTH/2+app.dashboard.x) + 200*AppData.RATIO,
+            y: -(AppData.HEIGHT/2+app.dashboard.y) + 200*AppData.RATIO
         }
         data = Session.ADD component
 
-        App.ADD.dispatch data
-        App.SETTINGS_CHANGE.dispatch { component: data.component_session_uid }
-        @delayToNextStep 0
+        # App.ADD.dispatch data
+        # App.SETTINGS_CHANGE.dispatch { component: data.component_session_uid }
+        console.log 'END'
+        # @delayToNextStep 0
         null
 
     action4: =>

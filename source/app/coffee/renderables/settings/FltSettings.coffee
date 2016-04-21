@@ -13,11 +13,11 @@ class FltSettings extends SettingsBase
         # space
         @add new Spacer(AppData.ICON_SPACE2)
 
-        # detune
-        @detune = new Detune @component_session_uid
-        @add @detune
+        # # detune
+        # @detune = new Detune @component_session_uid
+        # @add @detune
 
-        @add new Spacer(AppData.ICON_SPACE3)
+        # @add new Spacer(AppData.ICON_SPACE3)
 
         # Q
         @q = new Q @component_session_uid
@@ -25,25 +25,26 @@ class FltSettings extends SettingsBase
 
         @add new Spacer(AppData.ICON_SPACE3)
 
-        @filterTypes = new Filters @component_session_uid
-        @add @filterTypes
-
-        @add new Spacer(AppData.ICON_SPACE3)
+        # for now just a low pass filter
+        # @filterTypes = new Filters @component_session_uid
+        # @add @filterTypes
+        #
+        # @add new Spacer(AppData.ICON_SPACE3)
 
         # frequency
         @frequency = new Frequency @component_session_uid
         @frequency.range.min = 0
-        @frequency.range.max = 20000
+        @frequency.range.max = 5000
         @add @frequency
 
         @adjustPosition()
 
     onSettingsChange: (event) =>
         if event.component is @component_session_uid
-            @bypass.setActive Session.patch.presets[Session.patch.preset][@component_session_uid].bypass
+            @bypass.setActive Session.SETTINGS[@component_session_uid].settings.bypass
         null
 
     handleB: =>
-        Session.patch.presets[Session.patch.preset][@component_session_uid].bypass = !@bypass.active
+        Session.SETTINGS[@component_session_uid].settings.bypass = !@bypass.active
         App.SETTINGS_CHANGE.dispatch { component: @component_session_uid }
         null

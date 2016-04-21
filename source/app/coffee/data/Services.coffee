@@ -79,7 +79,6 @@ class Services
             load: (patch_id, callback) ->
                 patch = Services.PATCHES.child(patch_id)
                 patch.once 'value', callback
-                Services.api.presets.loadAll patch_id
                 null
 
             save: (patch_name, callback) ->
@@ -142,15 +141,15 @@ class Services
 
             loadAll: (patch_id, callback) ->
                 presets = Services.PRESETS.child(patch_id)
-                presets.once 'value', (data) ->
-                    d = data.val()
-                    # loads default presets
-                    if patch_id is Session.default.uid
-                        Session.default.presets = d
-                    Session.patch.presets = d
-                    App.PRESET_CHANGED.dispatch()
-                    null
+                presets.once 'value', callback
                 null
+
+            # load: (patch_id, preset_id, callback) ->
+            #     console.log 'load PRESET:', preset_id, 'from PATCH:', patch_id
+            #     presets = Services.PRESETS.child(patch_id)
+            #     preset = presets.child preset_id
+            #     preset.once 'value', callback
+            #     null
 
             save: (patch_id, preset_id, preset_name, callback) ->
                 patch = Services.PRESETS.child(patch_id)

@@ -1,6 +1,6 @@
 class LabelsToggle extends PIXI.Container
 
-    constructor: ->
+    constructor: (@selected=false) ->
         super()
 
         @graphics = new PIXI.Graphics()
@@ -11,21 +11,20 @@ class LabelsToggle extends PIXI.Container
         img = new PIXI.Sprite AppData.ASSETS.sprite.textures['help-toggle-bg.png']
         img.anchor.x = 0.5
         img.anchor.y = 0
+        # img.scale.x = img.scale.y = 0.5
         img.x = AppData.MENU_PANNEL / 2
         @addChild img
 
         @selector = new PIXI.Sprite AppData.ASSETS.sprite.textures['help-toggle-selector.png']
         @selector.x = 29 * AppData.RATIO
         @selector.y = 4 * AppData.RATIO
+        # @selector.scale.x = @selector.scale.y = 0.5
         @selector.alpha = 0.5
         @addChild @selector
-
-        labels = Cookies.getCookie('labels')
 
         @duration = 0.3
         @ease = Quad.easeInOut
         @enabled = false
-        @selected = if labels is 'show' then true else false
         @overAlpha = 1.0
         @outAlpha = 0.65
 
@@ -43,6 +42,7 @@ class LabelsToggle extends PIXI.Container
 
         @enable()
 
+        @selected
         if @selected is true
             @onOver()
         @swap()

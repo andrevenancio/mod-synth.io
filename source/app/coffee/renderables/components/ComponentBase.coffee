@@ -70,3 +70,12 @@ class ComponentBase extends PIXI.Container
             null
         }
         null
+
+    onSettingsChange: (event) =>
+        return if event.component is not @component_session_uid
+        @change()
+        null
+
+    change: ->
+        # to be overriden
+        null

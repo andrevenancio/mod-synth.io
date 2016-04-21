@@ -101,11 +101,11 @@ class App extends PixiBase
         @controls.alpha = 0
         AppData.PIXI.stage.addChild @controls
 
-        if AppData.SHOW_TOUR
-            @tour.start()
-        else
-            uid = Cookies.getCookie('patch') || 'default'
-            @loadPatch uid
+        # if AppData.SHOW_TOUR
+            # @tour.start()
+        # else
+        patch = Cookies.getCookie('patch') || 'default'
+        @loadPatch patch
 
         if AppData.SHOW_MENU_PANNEL
             @onToggleMenu { width: AppData.MENU_PANNEL + AppData.MENU_PANNEL_BORDER }, 0
@@ -120,7 +120,7 @@ class App extends PixiBase
         setTimeout =>
             data = Session.ADD componentData
             App.ADD.dispatch data
-            App.SETTINGS_CHANGE.dispatch { component: data.component_session_uid }
+            # App.SETTINGS_CHANGE.dispatch { component: data.component_session_uid }
         , delay * 1000.0
         null
 
@@ -196,37 +196,37 @@ class App extends PixiBase
         , 1000
         null
 
-    loadPatch: (uid) =>
-        # loop through data and add components with delay
-        Services.api.patches.load uid, (snapshot) =>
+    loadPatch: (patch_uid) =>
+        # Loads PATCH and all PRESETS
+        Services.api.patches.load patch_uid, (snapshot) =>
             data = snapshot.val()
 
-            if data is null
-                # patch in cookie doesnt exist in firebase, so we're reverting to default
-                uid = Session.default.uid
-                data = Session.default
-
-            Session.patch.uid = uid
+            Session.patch.uid = patch_uid
             Session.patch.author = data.author
             Session.patch.author_name = data.author_name
             Session.patch.components = data.components
             Session.patch.date = data.date
             Session.patch.name = data.name
             Session.patch.preset = data.preset
-            Session.patch.presets = {}
+            console.log 'loadPatch'
 
-            App.PATCH_CHANGED.dispatch()
+            Services.api.presets.loadAll patch_uid, (snapshot) =>
+                Session.patch.presets = snapshot.val()
+                App.PATCH_CHANGED.dispatch()
 
-            i = 0
-            for component of Session.patch.components
-                @initialAdd 0.123 * (i++), Session.patch.components[component]
+                i = 0
+                for component of Session.patch.components
+                    @initialAdd 0.123 * (i++), Session.patch.components[component]
 
-            # save cookie with latest patch
-            Cookies.setCookie 'patch', uid
+                # save cookie with latest patch
+                Cookies.setCookie 'patch', patch_uid
+                null
             null
         null
 
     onAutoSave: (data) =>
+        return
+        console.log 'autoSave'
         return if AppData.TOUR_MODE
 
         # save XY locally

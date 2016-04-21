@@ -73,7 +73,7 @@ class Menu extends PIXI.Container
         @buttons.push @midi
         @addChild @midi
 
-        @help = new LabelsToggle()
+        @help = new LabelsToggle AppData.SHOW_LABELS
         @help.buttonClick = =>
             AppData.SHOW_LABELS = !AppData.SHOW_LABELS
             App.HELP.dispatch AppData.SHOW_LABELS

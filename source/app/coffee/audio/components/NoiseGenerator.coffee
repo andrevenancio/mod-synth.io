@@ -31,8 +31,8 @@ class NoiseGenerator extends Component
 
     onSettingsChange: (event) =>
         if event.component is @component_session_uid
-            @type = Audio.NOISE_TYPE[Session.patch.presets[Session.patch.preset][@component_session_uid].noise_type]
-            @setVolume MathUtils.map(Session.patch.presets[Session.patch.preset][@component_session_uid].volume,  -60, 0, 0, 1)
+            @type = Audio.NOISE_TYPE[Session.SETTINGS[@component_session_uid].settings.noise_type]
+            @setVolume MathUtils.map(Session.SETTINGS[@component_session_uid].settings.volume,  -60, 0, 0, 1)
         null
 
     start: (frequency) ->
@@ -47,7 +47,7 @@ class NoiseGenerator extends Component
         @envelope.attackEnd = envAttackEnd
         @envelope.gain.cancelScheduledValues now
         @envelope.gain.setValueAtTime 0.0, now
-        if Session.patch.presets[Session.patch.preset][@component_session_uid].mute is false
+        if Session.SETTINGS[@component_session_uid].settings.mute is false
             @envelope.gain.linearRampToValueAtTime 1.0, envAttackEnd
             @envelope.gain.setTargetAtTime (@sustain*1.0)/100.0, envAttackEnd, (@decay/1000.0)+0.001
         null
@@ -64,7 +64,7 @@ class NoiseGenerator extends Component
 
             if @active.length is 0
                 rampValue = @getRampValue(0, 1, @envelope.attackStart, @envelope.attackEnd, now)
-                if Session.patch.presets[Session.patch.preset][@component_session_uid].mute is true
+                if Session.SETTINGS[@component_session_uid].settings.mute is true
                     rampValue = 0
                 @envelope.gain.cancelScheduledValues now
                 @envelope.gain.setValueAtTime rampValue, now

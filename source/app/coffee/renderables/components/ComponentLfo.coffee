@@ -26,21 +26,20 @@ class ComponentLfo extends ComponentBase
             { x: -1.99 * AppData.RATIO, y: 0 * AppData.RATIO },
             { x: -1.63 * AppData.RATIO, y: -1.2 * AppData.RATIO }
         ]
+        @change()
 
-    onSettingsChange: (event) =>
-        if event.component is @component_session_uid
-            if Session.patch.presets[Session.patch.preset][@component_session_uid].bypass is true
-                @__color = 0x3C3C3C
-                @__alpha = 0.2
-            else if Session.patch.presets[Session.patch.preset][@component_session_uid].bypass is false
-                @__color = AppData.COLORS[AppData.COMPONENTS.LFO]
-                @__alpha = 1
+    change: ->
+        if Session.SETTINGS[@component_session_uid].settings.bypass is true
+            @__color = 0x3C3C3C
+            @__alpha = 0.2
+        else if Session.SETTINGS[@component_session_uid].settings.bypass is false
+            @__color = AppData.COLORS[AppData.COMPONENTS.LFO]
+            @__alpha = 1
 
         @label.alpha = @__alpha
-
         @bg.tint = @__color
 
-        switch Session.patch.presets[Session.patch.preset][@component_session_uid].wave_type
+        switch Session.SETTINGS[@component_session_uid].settings.wave_type
             when AppData.WAVE_TYPE.SINE then @icon.texture = AppData.ASSETS.sprite.textures['ic-wave-sine-48.png']
             when AppData.WAVE_TYPE.TRIANGLE then @icon.texture = AppData.ASSETS.sprite.textures['ic-wave-tri-48.png']
             when AppData.WAVE_TYPE.SQUARE then @icon.texture = AppData.ASSETS.sprite.textures['ic-wave-sq-48.png']

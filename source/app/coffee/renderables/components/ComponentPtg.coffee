@@ -30,15 +30,15 @@ class ComponentPtg extends ComponentBase
             { x: -2.04 * AppData.RATIO, y: 0.6 * AppData.RATIO },
             { x: -1.63 * AppData.RATIO, y: -1.2 * AppData.RATIO }
         ]
+        @change()
 
-    onSettingsChange: (event) =>
-        if event.component is @component_session_uid
-            if Session.patch.presets[Session.patch.preset][@component_session_uid].bypass is true
-                @__color = 0x3C3C3C
-                @__alpha = 0.2
-            else if Session.patch.presets[Session.patch.preset][@component_session_uid].bypass is false
-                @__color = AppData.COLORS[AppData.COMPONENTS.PTG]
-                @__alpha = 1
+    change: ->
+        if Session.SETTINGS[@component_session_uid].settings.bypass is true
+            @__color = 0x3C3C3C
+            @__alpha = 0.2
+        else if Session.SETTINGS[@component_session_uid].settings.bypass is false
+            @__color = AppData.COLORS[AppData.COMPONENTS.PTG]
+            @__alpha = 1
 
         @label.alpha = @__alpha
         @graphics.alpha = @__alpha
@@ -49,7 +49,7 @@ class ComponentPtg extends ComponentBase
         index = 0
         for i in [0...4]
             for j in [0...4]
-                @graphics.beginFill 0xffffff, if Session.patch.presets[Session.patch.preset][@component_session_uid].pattern[index] is true then 1 else 0.5
+                @graphics.beginFill 0xffffff, if Session.SETTINGS[@component_session_uid].settings.pattern[index] is true then 1 else 0.5
                 @graphics.drawCircle (12 * j) * AppData.RATIO, (12 * i) * AppData.RATIO, 2 * AppData.RATIO
                 @graphics.endFill()
                 index++

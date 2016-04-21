@@ -137,8 +137,6 @@ class Dashboard extends View
             when AppData.COMPONENTS.FLT then shape = new ComponentFlt data.component_session_uid
             when AppData.COMPONENTS.PTG then shape = new ComponentPtg data.component_session_uid
             when AppData.COMPONENTS.LFO then shape = new ComponentLfo data.component_session_uid
-            else
-                return
 
         shape.onAdd()
 
@@ -150,10 +148,6 @@ class Dashboard extends View
         }
         @components.push shape
         @holder.addChild shape
-
-        App.AUTO_SAVE.dispatch {
-            component_session_uid: shape.component_session_uid
-        }
         null
 
     remove: (data) ->

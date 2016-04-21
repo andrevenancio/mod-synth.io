@@ -105,15 +105,15 @@ class LoadingScreen extends PIXI.Sprite
         # if we're seeing the tour for the first time, we close all pannels
         if AppData.SHOW_TOUR is true
             AppData.SHOW_MENU_PANNEL = false
-            AppData.SHOW_KEYBOARD_PANNEL = true
-            AppData.SHOW_LABELS = false
+            AppData.SHOW_KEYBOARD_PANNEL = false
+            AppData.SHOW_LABELS = true
         else
             # otherwise we read the cookie
             AppData.SHOW_MENU_PANNEL = if menu is 'show' then true else false
             AppData.SHOW_KEYBOARD_PANNEL = if keyboard is 'show' then true else false
             AppData.SHOW_LABELS = if labels is 'show' then true else false
 
-        # stored default patch settings and loads the patch in cookie
+        # saves default patch and presets so its public not locked to a user
         Services.api.patches.load 'default', (snapshot) =>
             data = snapshot.val()
 
@@ -124,19 +124,10 @@ class LoadingScreen extends PIXI.Sprite
             Session.default.date = data.date
             Session.default.name = data.name
             Session.default.preset = data.preset
-            Session.default.presets = {}
 
-            Session.patch.uid = 'default'
-            Session.patch.author = data.author
-            Session.patch.author_name = data.author_name
-            Session.patch.components = data.components
-            Session.patch.date = data.date
-            Session.patch.name = data.name
-            Session.patch.preset = data.preset
-            Session.patch.presets = {}
-
-            @end()
-            null
+            Services.api.presets.loadAll 'default', (snapshot) =>
+                Session.default.presets = snapshot.val()
+                @end()
         null
 
     start: ->

@@ -19,6 +19,7 @@ class SubmenuButtonPatch extends PIXI.Container
         @duration = 0.3
         @ease = Quad.easeInOut
         @enabled = false
+        @selected = false
         @overAlpha = 1.0
         @outAlpha = 0.65
 
@@ -47,7 +48,6 @@ class SubmenuButtonPatch extends PIXI.Container
         @addChild @img
 
         if @extraButton
-
             @remove = new ICButton AppData.ASSETS.sprite.textures['ic-remove-32.png'], ''
             @remove.x = AppData.SUBMENU_PANNEL-limit/2
             @remove.y = 0
@@ -57,7 +57,6 @@ class SubmenuButtonPatch extends PIXI.Container
 
         @alpha = @outAlpha
         @enable()
-        @setCurrent false
 
     onDown: =>
         @buttonClick()
@@ -69,11 +68,13 @@ class SubmenuButtonPatch extends PIXI.Container
 
     onOver: =>
         return if not @enabled
+        return if @selected
         TweenMax.to @, 0, { alpha: @overAlpha, ease: @ease }
         null
 
     onOut: =>
         return if not @enabled
+        return if @selected
         TweenMax.to @, @duration, { alpha: @outAlpha, ease: @ease }
         null
 
@@ -82,14 +83,19 @@ class SubmenuButtonPatch extends PIXI.Container
         null
 
     setCurrent: (value) ->
+        @selected = value
+
         if value is true
             @img.visible = true
             @date.x = @img.x + @img.width + AppData.PADDING/4
-            @date.text = 'Currently editing'
+            if @data.label isnt Session.default.name
+                @date.text = 'Currently editing'
+            TweenMax.to @, 0, { alpha: @overAlpha, ease: @ease }
         else
             @img.visible = false
             @date.x = AppData.PADDING
             @date.text = @data.date
+            TweenMax.to @, @duration, { alpha: @outAlpha, ease: @ease }
         null
 
     enable: ->

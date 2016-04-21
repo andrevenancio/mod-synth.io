@@ -77,7 +77,6 @@ class Services
                 null
 
             load: (patch_id, callback) ->
-                console.log 'firebase load', patch_id
                 patch = Services.PATCHES.child(patch_id)
                 patch.once 'value', callback
                 Services.api.presets.loadAll patch_id
@@ -160,7 +159,10 @@ class Services
                     date: String(Date.now())
                     name: preset_name
                 });
-                preset.once 'value', callback
+                preset.once 'value', (snapshot) ->
+                    console.log 'loads all presets in', patch_id
+                    Services.api.presets.loadAll patch_id, callback
+                    null
                 null
 
             remove: (patch_id, callback) ->
@@ -172,18 +174,19 @@ class Services
                 patch = Services.PRESETS.child(Session.patch.uid)
                 preset = patch.child(Session.patch.preset)
 
-                components = {}
-                for comp of Session.SETTINGS
-                    components[comp] = Session.SETTINGS[comp].settings
+                preset.remove =>
+                    components = {}
+                    for comp of Session.SETTINGS
+                        components[comp] = Session.SETTINGS[comp].settings
 
-                preset.update components
-                preset.once 'value', (snapshot) ->
-                    # console.log 'preset updated, change settings object in session'
-                    preset = Session.patch.preset
-                    # console.log 'PRESET:', preset
-                    # console.log Session.patch.presets[preset]
+                    preset.update components
+                    preset.once 'value', (snapshot) ->
+                        # console.log 'preset updated, change settings object in session'
+                        preset = Session.patch.preset
+                        # console.log 'PRESET:', preset
+                        # console.log Session.patch.presets[preset]
 
-                    # App.PRESET_CHANGED.dispatch()
-                    if callback
-                        callback()
+                        # App.PRESET_CHANGED.dispatch()
+                        if callback
+                            callback()
                 null

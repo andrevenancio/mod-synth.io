@@ -30,11 +30,11 @@ class ComponentEnv extends ComponentBase
 
     onSettingsChange: (event) =>
         if event.component is @component_session_uid
-            if Session.SETTINGS[@component_session_uid].settings.bypass is true
+            if Session.patch.presets[Session.patch.preset][@component_session_uid].bypass is true
                 @__color = 0x3C3C3C
                 @__alpha = 0.2
                 fillColor = 0x636363
-            else if Session.SETTINGS[@component_session_uid].settings.bypass is false
+            else if Session.patch.presets[Session.patch.preset][@component_session_uid].bypass is false
                 @__color = AppData.COLORS[AppData.COMPONENTS.ENV]
                 @__alpha = 1
                 fillColor = 0xffffff
@@ -48,15 +48,15 @@ class ComponentEnv extends ComponentBase
         # ADSR graphic
         x0 = 0
         y0 = AppData.ICON_SIZE_2
-        x1 = MathUtils.map(Session.SETTINGS[@component_session_uid].settings.attack, 0, 1000, 0, step)
+        x1 = MathUtils.map(Session.patch.presets[Session.patch.preset][@component_session_uid].attack, 0, 1000, 0, step)
         y1 = 0
         availableSustain -= x1
-        x2 = MathUtils.map(Session.SETTINGS[@component_session_uid].settings.decay, 0, 1000, x1, x1 + step)
-        y2 = MathUtils.map(Session.SETTINGS[@component_session_uid].settings.sustain, 0, 100, AppData.ICON_SIZE_2, 0)
-        availableSustain -= (x2-x1 + MathUtils.map(Session.SETTINGS[@component_session_uid].settings.release, 0, 1000, 0, step))
+        x2 = MathUtils.map(Session.patch.presets[Session.patch.preset][@component_session_uid].decay, 0, 1000, x1, x1 + step)
+        y2 = MathUtils.map(Session.patch.presets[Session.patch.preset][@component_session_uid].sustain, 0, 100, AppData.ICON_SIZE_2, 0)
+        availableSustain -= (x2-x1 + MathUtils.map(Session.patch.presets[Session.patch.preset][@component_session_uid].release, 0, 1000, 0, step))
         x3 = x2 + availableSustain
         y3 = y2
-        x4 = MathUtils.map(Session.SETTINGS[@component_session_uid].settings.release, 0, 1000, x3, x3 + step)
+        x4 = MathUtils.map(Session.patch.presets[Session.patch.preset][@component_session_uid].release, 0, 1000, x3, x3 + step)
         y4 = AppData.ICON_SIZE_2
 
         # draw it to offscreen canvas

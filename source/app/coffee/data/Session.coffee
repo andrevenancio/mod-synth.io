@@ -55,10 +55,19 @@ class Session
             Session.SETTINGS[id].audioCapable          = true
             Session.SETTINGS[id].connections.ENV       = null
             Session.SETTINGS[id].connections.PTG       = null
+            console.log 'THIS IS THE SOLUTION!'
+            # console.warn writes settings (this might be removed once I remove the references in app/renderables/elements/*.*)
             Session.SETTINGS[id].settings.solo         = if component.settings.solo isnt undefined then component.settings.solo else false
             Session.SETTINGS[id].settings.mute         = if component.settings.mute isnt undefined then component.settings.mute else false
             Session.SETTINGS[id].settings.volume       = if component.settings.volume isnt undefined then component.settings.volume else 0
             Session.SETTINGS[id].settings.noise_type   = if component.settings.noise_type isnt undefined then component.settings.noise_type else AppData.NOISE_TYPE.WHITE
+
+            # writes presets
+            Session.patch.presets[Session.patch.preset][id].solo
+            Session.patch.presets[Session.patch.preset][id].solo         = if component.settings.solo isnt undefined then component.settings.solo else false
+            Session.patch.presets[Session.patch.preset][id].mute         = if component.settings.mute isnt undefined then component.settings.mute else false
+            Session.patch.presets[Session.patch.preset][id].volume       = if component.settings.volume isnt undefined then component.settings.volume else 0
+            Session.patch.presets[Session.patch.preset][id].noise_type   = if component.settings.noise_type isnt undefined then component.settings.noise_type else AppData.NOISE_TYPE.WHITE
 
         if component.type_uid is AppData.COMPONENTS.OSC
             Session.SETTINGS[id].audioCapable          = true

@@ -24,6 +24,8 @@ class Instrument
         App.NOTE_OFF.add @onNoteOff
 
     onAdd: (data) =>
+        console.log 'preset', Session.patch.preset
+        console.log 'all preset', Session.patch.presets
         Analytics.event 'component', 'add', data.type_uid
         @add data
         null

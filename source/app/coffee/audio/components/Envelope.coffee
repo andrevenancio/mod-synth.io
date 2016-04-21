@@ -13,10 +13,10 @@ class Envelope extends Component
 
     onSettingsChange: (event) =>
         if event.component is @component_session_uid
-            @attack = Session.SETTINGS[@component_session_uid].settings.attack
-            @decay = Session.SETTINGS[@component_session_uid].settings.decay
-            @sustain = Session.SETTINGS[@component_session_uid].settings.sustain
-            @release = Session.SETTINGS[@component_session_uid].settings.release
+            @attack = Session.patch.presets[Session.patch.preset][@component_session_uid].attack
+            @decay = Session.patch.presets[Session.patch.preset][@component_session_uid].decay
+            @sustain = Session.patch.presets[Session.patch.preset][@component_session_uid].sustain
+            @release = Session.patch.presets[Session.patch.preset][@component_session_uid].release
         null
 
     @property 'attack',

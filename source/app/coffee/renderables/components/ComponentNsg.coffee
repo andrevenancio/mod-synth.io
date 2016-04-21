@@ -24,10 +24,10 @@ class ComponentNsg extends ComponentBase
 
     onSettingsChange: (event) =>
         if event.component is @component_session_uid
-            if Session.SETTINGS[@component_session_uid].settings.mute is true
+            if Session.patch.presets[Session.patch.preset][@component_session_uid].mute is true
                 @__color = 0x3C3C3C
                 @__alpha = 0.2
-            else if Session.SETTINGS[@component_session_uid].settings.mute is false
+            else if Session.patch.presets[Session.patch.preset][@component_session_uid].mute is false
                 @__color = AppData.COLORS[AppData.COMPONENTS.NSG]
                 @__alpha = 1
 
@@ -36,7 +36,7 @@ class ComponentNsg extends ComponentBase
         @bg.tint = @__color
         @over.tint = 0xffffff
 
-        switch Session.SETTINGS[@component_session_uid].settings.noise_type
+        switch Session.patch.presets[Session.patch.preset][@component_session_uid].noise_type
             when AppData.NOISE_TYPE.WHITE then @icon.texture = AppData.ASSETS.sprite.textures['ic-noise-white-48.png']
             when AppData.NOISE_TYPE.PINK then @icon.texture = AppData.ASSETS.sprite.textures['ic-noise-pink-48.png']
             when AppData.NOISE_TYPE.BROWN then @icon.texture = AppData.ASSETS.sprite.textures['ic-noise-brown-48.png']

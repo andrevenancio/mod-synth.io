@@ -177,5 +177,13 @@ class Services
                     components[comp] = Session.SETTINGS[comp].settings
 
                 preset.update components
-                preset.once 'value', callback
+                preset.once 'value', (snapshot) ->
+                    # console.log 'preset updated, change settings object in session'
+                    preset = Session.patch.preset
+                    # console.log 'PRESET:', preset
+                    # console.log Session.patch.presets[preset]
+
+                    # App.PRESET_CHANGED.dispatch()
+                    if callback
+                        callback()
                 null

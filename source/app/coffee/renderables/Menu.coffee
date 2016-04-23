@@ -31,7 +31,6 @@ class Menu extends PIXI.Container
         @select.alpha = 0
         @addChild @select
 
-        App.MIDI.add @onMidiStateChange
         App.PATCH_CHANGED.add @onPatchChanged
         App.PRESET_CHANGED.add @onPresetChanged
 
@@ -67,7 +66,6 @@ class Menu extends PIXI.Container
         @addChild @presets
 
         @midi = new MenuButton AppData.ASSETS.sprite.textures['ic-midi.png'], 'midi'
-        @midi.visible = false
         @midi.buttonClick = =>
             @openSubmenu 4
             null
@@ -185,16 +183,6 @@ class Menu extends PIXI.Container
 
         # change to new size
         App.TOGGLE_MENU.dispatch { width: AppData.SUBMENU_PANNEL + AppData.MENU_PANNEL + AppData.MENU_PANNEL_BORDER }
-        null
-
-    onMidiStateChange: (e) =>
-        # only shows menu if user has midi device, if midi device is disconnected, closes menu
-        if e.state is 'disconnected' and e.connection is 'closed'
-            @midi.visible = false
-            AppData.SHOW_MENU_PANNEL = false
-            App.TOGGLE_MENU.dispatch { width: 0 }
-        else if e.state is 'connected'
-            @midi.visible = true
         null
 
     onPatchChanged: =>

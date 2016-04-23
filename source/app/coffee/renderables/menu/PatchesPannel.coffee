@@ -4,8 +4,6 @@ class PatchesPannel extends Pannel
     constructor: (label) ->
         super label
 
-        @DEFAULT_MESSAGE = 'NOT LOGGED IN'
-
         @elements = []
 
         App.AUTH.add @checkUserAuth
@@ -24,7 +22,7 @@ class PatchesPannel extends Pannel
 
         isLoggedIn = Services.REFERENCE.getAuth() || false
 
-        @button_NEW = new SubmenuButton 'create new patch', AppData.ASSETS.sprite.textures['ic-add-32.png']
+        @button_NEW = new SubmenuButton 'save to new patch', AppData.ASSETS.sprite.textures['ic-add-32.png']
         @button_NEW.buttonClick = @createPatch
         @button_NEW.y = AppData.MENU_PANNEL
         @button_NEW.visible = isLoggedIn
@@ -53,18 +51,30 @@ class PatchesPannel extends Pannel
         if isLoggedIn
             # data is null, check is current session is same as default
             if data is null
-                # console.log 'CARALHO', Session.default.uid, Session.patch
-                # if Session.default.uid isnt Session.patch.uid
-                #     @resetToDefault()
-                #     @align()
-                #     return
+                if Session.patch.uid
+                    if Session.default.uid isnt Session.patch.uid
+                        @resetToDefault()
+                        @align()
+                        return
             else
+                # sorting by creation date.
+                order = []
                 for component of data
-                    bt = new SubmenuButtonPatch data[component].name, new Date(parseInt(data[component].date)).toLocaleDateString(), true
-                    bt.setCurrent Session.patch.uid is data[component].uid
-                    @attachButtonClick bt, component
+                    obj = data[component]
+                    obj.key = component
+                    order.push(obj);
+
+                order.sort (a,b) ->
+                    return a.date-b.date
+
+                for i in [0...order.length]
+                    bt = new SubmenuButtonPatch order[i].name, new Date(parseInt(order[i].date)).toLocaleDateString(), true
+                    bt.setCurrent Session.patch.uid is order[i].uid
+                    @attachButtonClick bt, order[i].key
                     @addChild bt
                     @elements.push bt
+
+        App.PATCH_CHANGED.dispatch()
         @align()
         null
 
@@ -82,20 +92,34 @@ class PatchesPannel extends Pannel
             input: true
             onConfirm: (data) =>
 
-                # clear all
-                for component of Session.SETTINGS
-                    App.REMOVE.dispatch Session.SETTINGS[component]
+                # to remove all components uncomment this
+                # and on Services.api.patches.save change to Session.patch.components = {}
+                # for component of Session.SETTINGS
+                #     App.REMOVE.dispatch Session.SETTINGS[component]
 
-                setTimeout =>
-                    # saves new patch
-                    Services.api.patches.save data, @checkUserPatches
-                , 500
+                # saves new patch
+                Services.api.patches.save data, (snapshot) =>
+                    # stores cookie
+                    Cookies.setCookie 'patch', Session.patch.uid
+                    # saves new default preset
+                    Services.api.presets.save Session.patch.uid, 'default', 'default', (snapshot) =>
+                        Session.patch.preset = 'default'
+                        Session.patch.presets = snapshot.val()
+
+                        App.PATCH_CHANGED.dispatch()
+                        App.PRESET_CHANGED.dispatch()
+                        App.AUTO_SAVE.dispatch {}
+
+                        for id of Session.patch.presets
+                            Services.api.presets.update id
+                        @checkUserPatches()
+                        null
+                    null
                 null
         }
         null
 
     resetToDefault: =>
-        console.log 'reset.......'
         App.LOAD_PATCH.dispatch {
             label: Session.default.uid,
             uid: Session.default.uid,
@@ -107,27 +131,27 @@ class PatchesPannel extends Pannel
         if Services.REFERENCE.getAuth()
             @checkUserPatches()
         else
+            Session.patches = {}
             @build()
         null
 
     checkUserPatches: =>
-        console.log 'checkUserPatches'
         Services.api.patches.getAll @rebuildUserPatches
         null
 
     rebuildUserPatches: (snapshot) =>
-        value = snapshot.val()
-        console.log 'rebuildUserPatches', value
-        @build value
+        Session.patches = snapshot.val() || {}
+        @build Session.patches
         null
 
     attachButtonClick: (bt, uid) =>
-
         bt.buttonClick = =>
+            return if uid is Session.patch.uid
             App.LOAD_PATCH.dispatch {
                 uid: uid,
                 label: bt.label.text
             }
+            @checkUserPatches()
             null
 
         if bt.extraButton
@@ -136,7 +160,13 @@ class PatchesPannel extends Pannel
                 App.PROMPT.dispatch {
                     question: 'Are you sure you want to delete "' + bt.label.text + '"?'
                     onConfirm: =>
-                        Services.api.patches.remove uid, @checkUserPatches
+                        Services.api.patches.remove uid, (snapshot) =>
+                            App.LOAD_PATCH.dispatch {
+                                uid: 'default',
+                                label: bt.label.text,
+                                confirm: false
+                            }
+                            @checkUserPatches()
                         null
                 }
                 null
@@ -144,5 +174,6 @@ class PatchesPannel extends Pannel
 
     onPatchLoaded: =>
         for i in [0...@elements.length]
+            return if not Session.patch.name
             @elements[i].setCurrent Session.patch.name.toUpperCase() is @elements[i].label.text
         null

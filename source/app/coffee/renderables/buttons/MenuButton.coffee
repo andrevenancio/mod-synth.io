@@ -46,18 +46,24 @@ class MenuButton extends PIXI.Container
         @hint.anchor.y = 1
         @hint.scale.x = @hint.scale.y = 0.5
         @hint.position.x = AppData.MENU_PANNEL/2
-        @hint.position.y = AppData.MENU_PANNEL - 10 * AppData.RATIO
+        @hint.position.y = AppData.MENU_PANNEL - 20 * AppData.RATIO
         @hint.hitArea = new PIXI.Rectangle(0, 0, 0, 0);
-        @hint.visible = AppData.SHOW_LABELS
         @addChild @hint
 
         @alpha = @outAlpha
 
         @hitArea = new PIXI.Rectangle(0, 0, AppData.MENU_PANNEL, AppData.MENU_PANNEL);
+        @onHelp AppData.SHOW_LABELS
         @enable()
 
     onHelp: (value) =>
         @hint.visible = value
+        if value is true
+            TweenMax.to @img, 0.2, { y: AppData.MENU_PANNEL/2 - 10*AppData.RATIO }
+            TweenMax.to @hint, 0.3, { alpha: 1, ease: @ease }
+        else
+            TweenMax.to @img, 0.2, { y: AppData.MENU_PANNEL/2 }
+            TweenMax.to @hint, 0.3, { alpha: 0, ease: @ease }
         null
 
     onDown: =>

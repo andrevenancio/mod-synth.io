@@ -84,7 +84,10 @@ class AddPannel extends Pannel
         App.ADD.dispatch data
         App.SETTINGS_CHANGE.dispatch { component: data.component_session_uid }
 
-        # uncomment to close menu
-        # AppData.SHOW_MENU_PANNEL = false
-        # App.TOGGLE_MENU.dispatch({ width: 0 });
+        App.AUTO_SAVE.dispatch {
+            component_session_uid: data.component_session_uid
+        }
+
+        for id of Session.patch.presets
+            Services.api.presets.updateAdd id, data
         null

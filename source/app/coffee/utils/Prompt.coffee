@@ -18,7 +18,6 @@ class Prompt
         #     question: 'Patch name:'
         #     input: true
         #     onConfirm: (data) =>
-        #         Services.api.patches.save data
         #         null
         # }
 
@@ -69,14 +68,11 @@ class Prompt
         @confirm.innerHTML = 'confirm'
         @holderButtons.appendChild @confirm
 
-        @cancel.addEventListener 'click', @handleCancel, false
-        @confirm.addEventListener 'click', @handleConfirm, false
-
-    handleCancel: =>
+    handleCancel: (e) =>
         @hide()
         null
 
-    handleConfirm: =>
+    handleConfirm: (e) =>
         # if using validation the confirmFN will be called by validation method
         if @handleValidation()
 
@@ -113,9 +109,14 @@ class Prompt
 
         AppData.KEYPRESS_ALLOWED = false
         TweenLite.to(@holder, 0.5, { autoAlpha: 1 })
+
+        @cancel.addEventListener 'click', @handleCancel, false
+        @confirm.addEventListener 'click', @handleConfirm, false
         null
 
     hide: ->
+        @cancel.removeEventListener 'click', @handleCancel, false
+        @confirm.removeEventListener 'click', @handleConfirm, false
         TweenLite.to(@holder, 0.5, { autoAlpha: 0, onComplete: =>
 
             AppData.KEYPRESS_ALLOWED = true

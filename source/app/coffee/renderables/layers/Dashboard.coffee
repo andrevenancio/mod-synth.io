@@ -86,9 +86,6 @@ class Dashboard extends View
         null
 
     onBackgroundUp: (e) =>
-        @mouseDown = false
-        @draggable.lock = false
-
         x = e.data.global.x - @draggable.position.x - @x
         y = e.data.global.y - @draggable.position.y - @y
         @physics.up x, y
@@ -97,11 +94,15 @@ class Dashboard extends View
             xxx = Math.round ((@downBody.GetPosition().x * @physics.worldScale) + @draggable.position.x) - (AppData.WIDTH/2)
             yyy = Math.round ((@downBody.GetPosition().y * @physics.worldScale) + @draggable.position.y) - (AppData.HEIGHT/2)
 
-            App.AUTO_SAVE.dispatch {
-                component_session_uid: @downBody.GetUserData().uid,
-                x: xxx
-                y: yyy
-            }
+            # avoiding pixi to fire when I click the HTML
+            if @mouseDown
+                App.AUTO_SAVE.dispatch {
+                    component_session_uid: @downBody.GetUserData().uid,
+                    x: xxx
+                    y: yyy
+                }
+        @mouseDown = false
+        @draggable.lock = false
 
         if @downBody isnt null and @isClick
             App.TOGGLE_SETTINGS_PANNEL_HEIGHT.dispatch {
@@ -137,6 +138,8 @@ class Dashboard extends View
             when AppData.COMPONENTS.FLT then shape = new ComponentFlt data.component_session_uid
             when AppData.COMPONENTS.PTG then shape = new ComponentPtg data.component_session_uid
             when AppData.COMPONENTS.LFO then shape = new ComponentLfo data.component_session_uid
+            else
+                return
 
         shape.onAdd()
 
@@ -148,6 +151,9 @@ class Dashboard extends View
         }
         @components.push shape
         @holder.addChild shape
+
+        xxx = Math.round ((shape.box2d.GetPosition().x * @physics.worldScale) + @draggable.position.x) - (AppData.WIDTH/2)
+        yyy = Math.round ((shape.box2d.GetPosition().y * @physics.worldScale) + @draggable.position.y) - (AppData.HEIGHT/2)
         null
 
     remove: (data) ->

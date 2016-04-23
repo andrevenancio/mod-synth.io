@@ -210,7 +210,6 @@ class Tour
 
         # App.ADD.dispatch data
         # App.SETTINGS_CHANGE.dispatch { component: data.component_session_uid }
-        console.log 'END'
         # @delayToNextStep 0
         null
 

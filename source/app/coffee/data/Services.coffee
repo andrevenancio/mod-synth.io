@@ -38,7 +38,7 @@ class Services
             twitter: (callback) ->
                 Services.REFERENCE.authWithOAuthPopup "twitter", (error, authData) ->
                     if error
-                        console.error 'Login Failed!', error
+                        console.warn 'Login Failed!', error
                     else
                         callback authData
                     null
@@ -47,7 +47,7 @@ class Services
             facebook: (callback) ->
                 Services.REFERENCE.authWithOAuthPopup "facebook", (error, authData) ->
                     if error
-                        console.error 'Login Failed!', error
+                        console.warn 'Login Failed!', error
                     else
                         callback authData
                     null
@@ -57,7 +57,7 @@ class Services
             github: (callback) ->
                 Services.REFERENCE.authWithOAuthPopup "github", (error, authData) ->
                     if error
-                        console.error 'Login Failed!', error
+                        console.warn 'Login Failed!', error
                     else
                         callback authData
                     null
@@ -83,14 +83,15 @@ class Services
 
             save: (patch_name, callback) ->
                 if Services.REFERENCE.getAuth()
+
                     # adds data
                     Session.patch.uid = Services.GENERATE_UID(16)
                     Session.patch.author = Services.REFERENCE.getAuth().uid
                     Session.patch.author_name = Services.REFERENCE.getAuth()[Services.REFERENCE.getAuth().auth.provider].displayName
-                    Session.patch.components = {}
+                    Session.patch.components = Session.SETTINGS
                     Session.patch.date = String(Date.now())
                     Session.patch.name = patch_name
-                    Session.patch.preset = Services.GENERATE_UID(16)
+                    Session.patch.preset = 'default'
                     Session.patch.presets = {}
 
                     # saves patch with current settings data
@@ -104,17 +105,14 @@ class Services
                         name: Session.patch.name
                         preset: Session.patch.preset
                     });
-                    patch.once 'value', (snapshot) ->
-                        Cookies.setCookie 'patch', snapshot.val().uid
-                        Services.api.presets.save Session.patch.uid, Session.patch.preset, 'default', callback
-                        null
+                    patch.once 'value', callback
                 null
 
             remove: (patch_id, callback) ->
                 if Services.REFERENCE.getAuth()
                     patch = Services.PATCHES.child(patch_id)
-                    patch.remove (snapshot) ->
-                        Services.api.presets.remove patch_id, callback
+                    patch.remove (snapshot) =>
+                        Services.api.presets.removeAll patch_id, callback
                         null
                 null
 
@@ -131,9 +129,7 @@ class Services
                             delete components[comp].settings
 
                         component.update components
-                        component.once 'value', (snapshot) ->
-                            Services.api.presets.update callback
-                            null
+                        component.once 'value', callback
                         null
                 null
 
@@ -144,48 +140,94 @@ class Services
                 presets.once 'value', callback
                 null
 
-            # load: (patch_id, preset_id, callback) ->
-            #     console.log 'load PRESET:', preset_id, 'from PATCH:', patch_id
-            #     presets = Services.PRESETS.child(patch_id)
-            #     preset = presets.child preset_id
-            #     preset.once 'value', callback
-            #     null
-
             save: (patch_id, preset_id, preset_name, callback) ->
                 patch = Services.PRESETS.child(patch_id)
                 preset = patch.child(preset_id)
                 preset.set({
                     date: String(Date.now())
                     name: preset_name
+                    components: {}
                 });
-                preset.once 'value', (snapshot) ->
-                    console.log 'loads all presets in', patch_id
+                preset.once 'value', (snapshot) =>
                     Services.api.presets.loadAll patch_id, callback
                     null
                 null
 
-            remove: (patch_id, callback) ->
-                patch = Services.PRESETS.child(patch_id)
-                patch.remove callback
+            removeAll: (patch_id, callback) ->
+                presets = Services.PRESETS.child(patch_id)
+                presets.remove callback
                 null
 
-            update: (callback) ->
-                patch = Services.PRESETS.child(Session.patch.uid)
-                preset = patch.child(Session.patch.preset)
+            remove: (patch_id, callback) ->
+                presets = Services.PRESETS.child(Session.patch.uid)
+                preset = presets.child(patch_id)
+                preset.remove (error) =>
+                    if not error
+                        Services.api.presets.loadAll Session.patch.uid, (snapshot) =>
+                            Session.patch.preset = 'default'
+                            Session.patch.presets = snapshot.val()
+                            if callback
+                                callback snapshot
+                            null
+                null
 
-                preset.remove =>
-                    components = {}
-                    for comp of Session.SETTINGS
-                        components[comp] = Session.SETTINGS[comp].settings
+            # updates settings of known components
+            update: (id, callback) ->
+                return if Session.patch.uid is 'default'
 
-                    preset.update components
-                    preset.once 'value', (snapshot) ->
-                        # console.log 'preset updated, change settings object in session'
-                        preset = Session.patch.preset
-                        # console.log 'PRESET:', preset
-                        # console.log Session.patch.presets[preset]
+                presets = Services.PRESETS.child(Session.patch.uid)
+                preset = presets.child(id)
+                component = preset.child('components')
+                component.remove =>
+                    components = Session.DUPLICATE_OBJECT Session.SETTINGS
 
-                        # App.PRESET_CHANGED.dispatch()
+                    # loops all components
+                    for comp of components
+                        # loops all properties in component
+                        for prop of components[comp]
+                            # deletes everything outsite settings
+                            if prop isnt 'settings'
+                                delete components[comp][prop]
+                            else
+                                # loops everything inside settings, and saves it
+                                for p of components[comp][prop]
+                                    components[comp][p] = components[comp][prop][p]
+                                # safely remove settings
+                                delete components[comp][prop]
+
+                    component.update components
+                    component.once 'value', (snapshot) =>
+                        Session.patch.presets[id].components = snapshot.val()
                         if callback
-                            callback()
+                            callback snapshot
+                    null
+                null
+
+            # updates settings of known components
+            updateAdd: (id, data) ->
+                return if Session.patch.uid is 'default'
+                settings = Session.DUPLICATE_OBJECT data.settings
+
+                presets = Services.PRESETS.child(Session.patch.uid)
+                preset = presets.child(id)
+                components = preset.child('components')
+                component = components.child(data.component_session_uid)
+                component.set settings
+                component.once 'value', (snapshot) =>
+                    Session.patch.presets[id].components[data.component_session_uid] = snapshot.val()
+                    null
+                null
+
+            # removes component
+            updateRemove: (id, component_session_uid) ->
+                return if Session.patch.uid is 'default'
+
+                presets = Services.PRESETS.child(Session.patch.uid)
+                preset = presets.child(id)
+                components = preset.child('components')
+                component = components.child(component_session_uid)
+                component.remove (error) =>
+                    if not error
+                        delete Session.patch.presets[id].components[component_session_uid]
+                    null
                 null

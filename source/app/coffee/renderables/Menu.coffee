@@ -32,6 +32,7 @@ class Menu extends PIXI.Container
         @addChild @select
 
         App.MIDI.add @onMidiStateChange
+        App.PATCH_CHANGED.add @onPatchChanged
         App.PRESET_CHANGED.add @onPresetChanged
 
         @build()
@@ -194,6 +195,16 @@ class Menu extends PIXI.Container
             App.TOGGLE_MENU.dispatch { width: 0 }
         else if e.state is 'connected'
             @midi.visible = true
+        null
+
+    onPatchChanged: =>
+        total = Object.keys(Session.patches).length + 1
+
+        if total > 0
+            @patches.count.visible = true
+            @patches.count.text = total
+        else
+            @patches.count.visible = false
         null
 
     onPresetChanged: =>

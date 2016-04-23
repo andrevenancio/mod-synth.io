@@ -53,10 +53,14 @@ class SettingsBase extends PIXI.Container
     removeComponent: =>
         App.REMOVE.dispatch { component_session_uid: @component_session_uid }
         setTimeout =>
+
             App.AUTO_SAVE.dispatch {
                 component_session_uid: @component_session_uid
             }
-        , 1000
+            for id of Session.patch.presets
+                Services.api.presets.updateRemove id, @component_session_uid
+
+        , 500
         null
 
     handleAutoSave: =>

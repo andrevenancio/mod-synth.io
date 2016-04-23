@@ -12,7 +12,7 @@ class Session
         author_name: null
         date: null
         preset: null
-        presets: []
+        presets: {}
     }
 
     # current patch data
@@ -23,8 +23,10 @@ class Session
         author_name: null
         date: null
         preset: null
-        presets: []
+        presets: {}
     }
+
+    @patches = {}
 
     @SETTINGS = {}
 
@@ -44,8 +46,16 @@ class Session
         # adds connections object (which only has objects on audioCapable devices)
         Session.SETTINGS[id].connections = {}
 
+        # read any saved settings from preset
+        settings = {}
+        if Session.patch.preset
+            if Session.patch.presets
+                components = Session.patch.presets[Session.patch.preset].components || {}
+                settings = components[id] || {}
+
         # imports component settings if available
-        Session.SETTINGS[id].settings = component.settings || {}
+        component.settings = settings
+        Session.SETTINGS[id].settings = settings
 
         # default X & Y
         Session.SETTINGS[id].x = if component.x isnt undefined then component.x else 0
@@ -119,3 +129,16 @@ class Session
 
     @DUPLICATE_OBJECT: (obj) ->
         return JSON.parse(JSON.stringify(obj))
+
+    @debounce: (func, threshold, execAsap) ->
+      timeout = null
+      (args...) ->
+        obj = this
+        delayed = ->
+          func.apply(obj, args) unless execAsap
+          timeout = null
+        if timeout
+          clearTimeout(timeout)
+        else if (execAsap)
+          func.apply(obj, args)
+        timeout = setTimeout delayed, threshold || 100

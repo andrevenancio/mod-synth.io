@@ -13,6 +13,7 @@ class App extends PixiBase
     @PROMPT: new signals.Signal()
 
     @LOAD_PATCH: new signals.Signal()
+    @LOAD_PRESET: new signals.Signal()
     @PATCH_CHANGED: new signals.Signal()
     @PRESET_CHANGED: new signals.Signal()
 
@@ -50,7 +51,10 @@ class App extends PixiBase
         App.TOGGLE_MENU.add @onToggleMenu
         App.PROMPT.add @onPrompt
         App.LOAD_PATCH.add @onLoadPatch
+        App.LOAD_PRESET.add @onLoadPreset
         App.AUTO_SAVE.add @onAutoSave
+
+        App.AUTH.add @checkUserAuth
 
         App.TOGGLE_KEYBOARD.add @onToggle
         App.HELP.add @onHelp
@@ -120,7 +124,7 @@ class App extends PixiBase
         setTimeout =>
             data = Session.ADD componentData
             App.ADD.dispatch data
-            # App.SETTINGS_CHANGE.dispatch { component: data.component_session_uid }
+            App.SETTINGS_CHANGE.dispatch { component: data.component_session_uid }
         , delay * 1000.0
         null
 
@@ -186,6 +190,26 @@ class App extends PixiBase
                 null
         null
 
+    onLoadPreset: (data) =>
+
+        # changes selected preset
+        Session.patch.preset = data.uid
+
+        # loops all components
+        preset = Session.patch.presets[Session.patch.preset]
+        # loops through all components in preset
+        for component of preset.components
+            settings = Session.DUPLICATE_OBJECT Session.SETTINGS[component].settings
+            if settings
+                for p of preset.components[component]
+                    settings[p] = preset.components[component][p]
+                Session.SETTINGS[component].settings = settings
+                App.SETTINGS_CHANGE.dispatch { component: component }
+
+        # let app know all is updated
+        App.PRESET_CHANGED.dispatch()
+        null
+
     clearPatch: (callback) =>
         for component of Session.SETTINGS
             App.REMOVE.dispatch Session.SETTINGS[component]
@@ -201,6 +225,11 @@ class App extends PixiBase
         Services.api.patches.load patch_uid, (snapshot) =>
             data = snapshot.val()
 
+            # if user tries to load inexistent patch
+            if data is null
+                @loadPatch 'default'
+                return
+
             Session.patch.uid = patch_uid
             Session.patch.author = data.author
             Session.patch.author_name = data.author_name
@@ -208,34 +237,37 @@ class App extends PixiBase
             Session.patch.date = data.date
             Session.patch.name = data.name
             Session.patch.preset = data.preset
-            console.log 'loadPatch'
 
+            # save cookie with latest patch
+            Cookies.setCookie 'patch', patch_uid
+
+            # loads all presets
             Services.api.presets.loadAll patch_uid, (snapshot) =>
                 Session.patch.presets = snapshot.val()
+
                 App.PATCH_CHANGED.dispatch()
+                App.PRESET_CHANGED.dispatch()
 
                 i = 0
                 for component of Session.patch.components
                     @initialAdd 0.123 * (i++), Session.patch.components[component]
-
-                # save cookie with latest patch
-                Cookies.setCookie 'patch', patch_uid
                 null
             null
         null
 
-    onAutoSave: (data) =>
-        return
-        console.log 'autoSave'
-        return if AppData.TOUR_MODE
+    onAutoSave: Session.debounce (data) ->
+        return if AppData.TOUR_MODE is true
+        return if Session.patch.uid is 'default'
 
-        # save XY locally
         if data.x
             Session.SETTINGS[data.component_session_uid].x = data.x
         if data.y
             Session.SETTINGS[data.component_session_uid].y = data.y
         Services.api.patches.update()
-        null
+
+        return if not Services.REFERENCE.getAuth()
+        Services.api.presets.update Session.patch.preset
+    , 500
 
     onToggle: (value) =>
         Cookies.setCookie 'keyboard', if value is true then 'show' else 'hide'
@@ -243,4 +275,10 @@ class App extends PixiBase
 
     onHelp: (value) =>
         Cookies.setCookie 'labels', if value is true then 'show' else 'hide'
+        null
+
+    checkUserAuth: =>
+        if not Services.REFERENCE.getAuth()
+            @clearPatch =>
+                @loadPatch 'default'
         null

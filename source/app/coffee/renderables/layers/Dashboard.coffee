@@ -86,9 +86,6 @@ class Dashboard extends View
         null
 
     onBackgroundUp: (e) =>
-        @mouseDown = false
-        @draggable.lock = false
-
         x = e.data.global.x - @draggable.position.x - @x
         y = e.data.global.y - @draggable.position.y - @y
         @physics.up x, y
@@ -97,11 +94,15 @@ class Dashboard extends View
             xxx = Math.round ((@downBody.GetPosition().x * @physics.worldScale) + @draggable.position.x) - (AppData.WIDTH/2)
             yyy = Math.round ((@downBody.GetPosition().y * @physics.worldScale) + @draggable.position.y) - (AppData.HEIGHT/2)
 
-            App.AUTO_SAVE.dispatch {
-                component_session_uid: @downBody.GetUserData().uid,
-                x: xxx
-                y: yyy
-            }
+            # avoiding pixi to fire when I click the HTML
+            if @mouseDown
+                App.AUTO_SAVE.dispatch {
+                    component_session_uid: @downBody.GetUserData().uid,
+                    x: xxx
+                    y: yyy
+                }
+        @mouseDown = false
+        @draggable.lock = false
 
         if @downBody isnt null and @isClick
             App.TOGGLE_SETTINGS_PANNEL_HEIGHT.dispatch {
@@ -143,7 +144,7 @@ class Dashboard extends View
         shape.onAdd()
 
         # attach box2d object to shape (for positioning)
-        shape.box2d = @physics.createCustom( shape.vertices, @center.x + data.settings.x, @center.y + data.settings.y, Box2D.Dynamics.b2Body.b2_dynamicBody );
+        shape.box2d = @physics.createCustom( shape.vertices, @center.x + data.x, @center.y + data.y, Box2D.Dynamics.b2Body.b2_dynamicBody );
         # attached component session id, for clicks logic
         shape.box2d.SetUserData {
             uid: shape.component_session_uid
@@ -151,9 +152,8 @@ class Dashboard extends View
         @components.push shape
         @holder.addChild shape
 
-        App.AUTO_SAVE.dispatch {
-            component_session_uid: shape.component_session_uid
-        }
+        xxx = Math.round ((shape.box2d.GetPosition().x * @physics.worldScale) + @draggable.position.x) - (AppData.WIDTH/2)
+        yyy = Math.round ((shape.box2d.GetPosition().y * @physics.worldScale) + @draggable.position.y) - (AppData.HEIGHT/2)
         null
 
     remove: (data) ->

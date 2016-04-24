@@ -1,6 +1,6 @@
 class LabelsToggle extends PIXI.Container
 
-    constructor: ->
+    constructor: (@selected=false) ->
         super()
 
         @graphics = new PIXI.Graphics()
@@ -15,21 +15,18 @@ class LabelsToggle extends PIXI.Container
         @addChild img
 
         @selector = new PIXI.Sprite AppData.ASSETS.sprite.textures['help-toggle-selector.png']
-        @selector.x = 29 * AppData.RATIO
-        @selector.y = 4 * AppData.RATIO
+        @selector.x = 32 * AppData.RATIO
+        @selector.y = 3 * AppData.RATIO
         @selector.alpha = 0.5
         @addChild @selector
-
-        labels = Cookies.getCookie('labels')
 
         @duration = 0.3
         @ease = Quad.easeInOut
         @enabled = false
-        @selected = if labels is 'show' then true else false
         @overAlpha = 1.0
         @outAlpha = 0.65
 
-        @label = new PIXI.Text 'HELP OFF', AppData.TEXTFORMAT.MENU_SMALL
+        @label = new PIXI.Text 'LABELS OFF', AppData.TEXTFORMAT.HINT
         @label.anchor.x = 0.5
         @label.anchor.y = 1
         @label.scale.x = @label.scale.y = 0.5
@@ -43,6 +40,7 @@ class LabelsToggle extends PIXI.Container
 
         @enable()
 
+        @selected
         if @selected is true
             @onOver()
         @swap()
@@ -55,7 +53,7 @@ class LabelsToggle extends PIXI.Container
         null
 
     swap: ->
-        TweenMax.to @selector, 0.3, { x: (if @selected is true then 49 else 29) * AppData.RATIO, alpha: (if @selected is true then 1 else 0.5), ease: Power2.easeInOut }
+        TweenMax.to @selector, 0.3, { x: (if @selected is true then 49 else 32) * AppData.RATIO, alpha: (if @selected is true then 1 else 0.5), ease: Power2.easeInOut }
         @label.text = 'LABELS ' + (if @selected is true then 'ON' else 'OFF')
         null
 

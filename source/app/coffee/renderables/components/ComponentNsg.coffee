@@ -21,15 +21,15 @@ class ComponentNsg extends ComponentBase
             { x: 2.15 * AppData.RATIO, y: 1.85 * AppData.RATIO },
             { x: -2.15 * AppData.RATIO, y: 1.85 * AppData.RATIO }
         ]
+        @change()
 
-    onSettingsChange: (event) =>
-        if event.component is @component_session_uid
-            if Session.SETTINGS[@component_session_uid].settings.mute is true
-                @__color = 0x3C3C3C
-                @__alpha = 0.2
-            else if Session.SETTINGS[@component_session_uid].settings.mute is false
-                @__color = AppData.COLORS[AppData.COMPONENTS.NSG]
-                @__alpha = 1
+    change: ->
+        if Session.SETTINGS[@component_session_uid].settings.mute is true
+            @__color = 0x3C3C3C
+            @__alpha = 0.2
+        else if Session.SETTINGS[@component_session_uid].settings.mute is false
+            @__color = AppData.COLORS[AppData.COMPONENTS.NSG]
+            @__alpha = 1
 
         @label.alpha = @__alpha
         @icon.alpha = @__alpha

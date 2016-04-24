@@ -5,10 +5,10 @@ class Oscillator extends Component
         super data
 
         @parameters.type = Audio.WAVE_TYPE[data.settings.wave_type]
-        @parameters.detune =  0.0
-        @parameters.octave =  1.0
-        @parameters.portamento = 0.0
-        @parameters.poly = false
+        @parameters.detune =  data.settings.detune
+        @parameters.octave =  data.settings.octave
+        @parameters.portamento = data.settings.portamento
+        @parameters.poly = data.settings.poly
 
         @activeOscillators = []
 

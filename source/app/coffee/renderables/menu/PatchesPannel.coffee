@@ -4,8 +4,6 @@ class PatchesPannel extends Pannel
     constructor: (label) ->
         super label
 
-        @DEFAULT_MESSAGE = 'NOT LOGGED IN'
-
         @elements = []
 
         App.AUTH.add @checkUserAuth
@@ -21,59 +19,63 @@ class PatchesPannel extends Pannel
 
     build: (data) =>
         @clear()
-        if Services.REFERENCE.getAuth()
 
-            # ADD new PATCH
-            @button_NEW = new SubmenuButton 'create new patch', AppData.ASSETS.sprite.textures['ic-add-32.png']
-            @button_NEW.buttonClick = @createPatch
-            @button_NEW.y = AppData.MENU_PANNEL
-            @addChild @button_NEW
+        isLoggedIn = Services.REFERENCE.getAuth() || false
 
-            @saved = new PIXI.Text 'YOUR PATCHES', AppData.TEXTFORMAT.MENU_SUBTITLE
-            @saved.tint = 0x646464
-            @saved.scale.x = @saved.scale.y = 0.5
-            @saved.position.x = AppData.PADDING
-            @saved.position.y = @button_NEW.y + @button_NEW.height + AppData.PADDING
-            @addChild @saved
+        @button_NEW = new SubmenuButton 'save to new patch', AppData.ASSETS.sprite.textures['ic-add-32.png']
+        @button_NEW.buttonClick = @createPatch
+        @button_NEW.y = AppData.MENU_PANNEL
+        @button_NEW.visible = isLoggedIn
+        @addChild @button_NEW
 
-            bt = new SubmenuButtonPatch Session.default.uid, new Date(parseInt(Session.default.date)).toLocaleDateString(), false
-            bt.setCurrent Session.default.uid is Session.patch.uid
-            @attachButtonClick bt, Session.default.uid
-            @addChild bt
-            @elements.push bt
+        @description = new PIXI.Text 'You need to login in order to save or load patches.', AppData.TEXTFORMAT.MENU_DESCRIPTION
+        @description.scale.x = @description.scale.y = 0.5
+        @description.position.x = AppData.PADDING
+        @description.position.y = @button_NEW.y
+        @description.visible = !isLoggedIn
+        @addChild @description
 
+        @saved = new PIXI.Text 'AVAILABLE PATCHES', AppData.TEXTFORMAT.MENU_SUBTITLE
+        @saved.tint = 0x646464
+        @saved.scale.x = @saved.scale.y = 0.5
+        @saved.position.x = AppData.PADDING
+        @saved.position.y = @button_NEW.y + @button_NEW.height + AppData.PADDING
+        @addChild @saved
+
+        bt = new SubmenuButtonPatch Session.default.uid, new Date(parseInt(Session.default.date)).toLocaleDateString(), false
+        bt.setCurrent Session.default.uid is Session.patch.uid
+        @attachButtonClick bt, Session.default.uid
+        @addChild bt
+        @elements.push bt
+
+        if isLoggedIn
             # data is null, check is current session is same as default
             if data is null
-                if Session.default.uid isnt Session.patch.uid
-                    @resetToDefault()
-                    @align()
-                    return
-
-            @onPatchLoaded()
-
-            if data
+                if Session.patch.uid
+                    if Session.default.uid isnt Session.patch.uid
+                        @resetToDefault()
+                        @align()
+                        return
+            else
+                # sorting by creation date.
+                order = []
                 for component of data
-                    bt = new SubmenuButtonPatch data[component].name, new Date(parseInt(data[component].date)).toLocaleDateString(), true
-                    bt.setCurrent Session.patch.uid is data[component].uid
-                    @attachButtonClick bt, component
+                    obj = data[component]
+                    obj.key = component
+                    order.push(obj);
+
+                order.sort (a,b) ->
+                    return a.date-b.date
+
+                for i in [0...order.length]
+                    bt = new SubmenuButtonPatch order[i].name, new Date(parseInt(order[i].date)).toLocaleDateString(), true
+                    bt.setCurrent Session.patch.uid is order[i].uid
+                    @attachButtonClick bt, order[i].key
                     @addChild bt
                     @elements.push bt
 
-            @align()
-        else
-            # nothing
-            @title = new PIXI.Text @DEFAULT_MESSAGE, AppData.TEXTFORMAT.MENU_SUBTITLE
-            @title.tint = 0x646464
-            @title.scale.x = @title.scale.y = 0.5
-            @title.position.x = AppData.PADDING
-            @title.position.y = AppData.MENU_PANNEL
-            @addChild @title
-
-            @description = new PIXI.Text 'You need to login in order to save or load patches.', AppData.TEXTFORMAT.MENU_DESCRIPTION
-            @description.scale.x = @description.scale.y = 0.5
-            @description.position.x = AppData.PADDING
-            @description.position.y = @title.y + @title.height + AppData.PADDING
-            @addChild @description
+        App.PATCH_CHANGED.dispatch()
+        @align()
         null
 
     align: ->
@@ -90,19 +92,29 @@ class PatchesPannel extends Pannel
             input: true
             onConfirm: (data) =>
 
-                # clear all
-                for component of Session.SETTINGS
-                    App.REMOVE.dispatch Session.SETTINGS[component]
+                # to remove all components uncomment this
+                # and on Services.api.patches.save change to Session.patch.components = {}
+                # for component of Session.SETTINGS
+                #     App.REMOVE.dispatch Session.SETTINGS[component]
 
-                setTimeout =>
-                    # saves new patch
-                    Services.api.patches.set_patch data, (d) ->
-                        Cookies.setCookie 'patch', d.val().uid
+                # saves new patch
+                Services.api.patches.save data, (snapshot) =>
+                    # stores cookie
+                    Cookies.setCookie 'patch', Session.patch.uid
+                    # saves new default preset
+                    Services.api.presets.save Session.patch.uid, 'default', 'default', (snapshot) =>
+                        Session.patch.preset = 'default'
+                        Session.patch.presets = snapshot.val()
+
+                        App.PATCH_CHANGED.dispatch()
+                        App.PRESET_CHANGED.dispatch()
+                        App.AUTO_SAVE.dispatch {}
+
+                        for id of Session.patch.presets
+                            Services.api.presets.update id
+                        @checkUserPatches()
                         null
-
-                    # checks for all user patches
-                    @checkUserPatches()
-                , 1000
+                    null
                 null
         }
         null
@@ -119,6 +131,7 @@ class PatchesPannel extends Pannel
         if Services.REFERENCE.getAuth()
             @checkUserPatches()
         else
+            Session.patches = {}
             @build()
         null
 
@@ -127,16 +140,18 @@ class PatchesPannel extends Pannel
         null
 
     rebuildUserPatches: (snapshot) =>
-        @build snapshot.val()
+        Session.patches = snapshot.val() || {}
+        @build Session.patches
         null
 
     attachButtonClick: (bt, uid) =>
-
         bt.buttonClick = =>
+            return if uid is Session.patch.uid
             App.LOAD_PATCH.dispatch {
                 uid: uid,
                 label: bt.label.text
             }
+            @checkUserPatches()
             null
 
         if bt.extraButton
@@ -145,18 +160,20 @@ class PatchesPannel extends Pannel
                 App.PROMPT.dispatch {
                     question: 'Are you sure you want to delete "' + bt.label.text + '"?'
                     onConfirm: =>
-                        Services.api.patches.delete_patch uid, @checkUserPatches
+                        Services.api.patches.remove uid, (snapshot) =>
+                            App.LOAD_PATCH.dispatch {
+                                uid: 'default',
+                                label: bt.label.text,
+                                confirm: false
+                            }
+                            @checkUserPatches()
                         null
                 }
                 null
         null
 
     onPatchLoaded: =>
-        # return if AppData.TOUR_MODE
-        # Session.patch.name.toUpperCase()
-        # Session.patch.author.toUpperCase()
-        # new Date(parseInt(Session.patch.date)).toLocaleDateString()
-
         for i in [0...@elements.length]
+            return if not Session.patch.name
             @elements[i].setCurrent Session.patch.name.toUpperCase() is @elements[i].label.text
         null

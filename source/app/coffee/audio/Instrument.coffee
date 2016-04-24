@@ -85,8 +85,6 @@ class Instrument
             when AppData.COMPONENTS.FLT then component = new Flt data
             when AppData.COMPONENTS.PTG then component = new PatternGate data
             when AppData.COMPONENTS.LFO then component = new Lfo data
-            else
-                return
 
         if component
             if data.audioCapable

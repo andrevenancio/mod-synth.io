@@ -20,15 +20,15 @@ class ComponentOsc extends ComponentBase
             { x: 1.8 * AppData.RATIO, y: 1.8 * AppData.RATIO },
             { x: -1.8 * AppData.RATIO, y: 1.8 * AppData.RATIO }
         ]
+        @change()
 
-    onSettingsChange: (event) =>
-        if event.component is @component_session_uid
-            if Session.SETTINGS[@component_session_uid].settings.mute is true
-                @__color = 0x3C3C3C
-                @__alpha = 0.2
-            else if Session.SETTINGS[@component_session_uid].settings.mute is false
-                @__color = AppData.COLORS[AppData.COMPONENTS.OSC]
-                @__alpha = 1
+    change: ->
+        if Session.SETTINGS[@component_session_uid].settings.mute is true
+            @__color = 0x3C3C3C
+            @__alpha = 0.2
+        else if Session.SETTINGS[@component_session_uid].settings.mute is false
+            @__color = AppData.COLORS[AppData.COMPONENTS.OSC]
+            @__alpha = 1
 
         @label.alpha = @__alpha
         @icon.alpha = @__alpha

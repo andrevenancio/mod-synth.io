@@ -5,6 +5,7 @@ class ChannelStrip
 
         # channel strip output
         @output = Audio.CONTEXT.createGain()
+        @output.gain.value = 0.4
 
         # channel strip input
         @input = Audio.CONTEXT.createGain()

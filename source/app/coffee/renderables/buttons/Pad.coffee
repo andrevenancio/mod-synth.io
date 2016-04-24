@@ -18,6 +18,10 @@ class Pad extends PIXI.Container
         @icon = new PIXI.Graphics()
         @addChild @icon
 
+        @_selected = 1
+        @_tick = 0.5
+        @_unselected = 0.2
+
         @active = false
         @interactive = @buttonMode = true
         @draw()
@@ -43,23 +47,22 @@ class Pad extends PIXI.Container
         null
 
     select: ->
-        @__alpha = 1.0
+        @__alpha = @_selected
         @draw()
         null
 
     unselect: ->
-        @__alpha = 0.2
+        @__alpha = @_unselected
         @draw()
         null
 
     tick: ->
-        @last = @__alpha
-        @__alpha = 0.5
+        @__alpha = @_tick
         @draw()
         null
 
     untick: ->
-        @__alpha = @last
+        @__alpha = if @active is true then @_selected else @_unselected
         @draw()
         null
 

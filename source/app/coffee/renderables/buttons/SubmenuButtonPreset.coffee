@@ -1,4 +1,4 @@
-class SubmenuButtonPatch extends PIXI.Container
+class SubmenuButtonPreset extends PIXI.Container
 
     constructor: (label, date, @extraButton = false) ->
         super()
@@ -84,15 +84,17 @@ class SubmenuButtonPatch extends PIXI.Container
 
     setCurrent: (value) ->
         @selected = value
+
         if value is true
             @img.visible = true
             @date.x = @img.x + @img.width + AppData.PADDING/4
-            if @data.label isnt Session.default.name
+            if Session.patch.uid isnt 'default'
                 @date.text = 'Currently editing'
                 @img.tint = 0x00ff00
             else
                 @date.text = 'Currently selected'
                 @img.tint = 0xff0000
+
             TweenMax.to @, 0, { alpha: @overAlpha, ease: @ease }
         else
             @img.visible = false

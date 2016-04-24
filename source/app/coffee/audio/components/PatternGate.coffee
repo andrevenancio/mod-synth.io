@@ -5,7 +5,7 @@ class PatternGate extends Component
         super data
 
         @parameters.bypass = data.settings.bypass
-        @parameters.pattern =  data.settings.pattern
+        @parameters.pattern = data.settings.pattern
 
         App.SETTINGS_CHANGE.add @onSettingsChange
 

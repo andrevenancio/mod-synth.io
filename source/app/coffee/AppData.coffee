@@ -157,13 +157,6 @@ class AppData
             wordWrapWidth: @SUBMENU_PANNEL + @MENU_PANNEL + @PADDING
 
         # 2X
-        MENU_DESCRIPTION_SMALL:
-            font: ( 20 * @RATIO ) + 'px sofia_prolight',
-            fill: 'white'
-            align: 'left'
-            wordWrap: true
-            wordWrapWidth: @SUBMENU_PANNEL + @MENU_PANNEL
-        # 2X
         SETTINGS_TITLE:
             font: ( 40 * @RATIO ) + 'px sofia_prolight',
             fill: 'white'

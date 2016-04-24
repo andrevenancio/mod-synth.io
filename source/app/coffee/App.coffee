@@ -105,11 +105,11 @@ class App extends PixiBase
         @controls.alpha = 0
         AppData.PIXI.stage.addChild @controls
 
-        # if AppData.SHOW_TOUR
-            # @tour.start()
-        # else
-        patch = Cookies.getCookie('patch') || 'default'
-        @loadPatch patch
+        if AppData.SHOW_TOUR
+            @tour.start()
+        else
+            patch = Cookies.getCookie('patch') || 'default'
+            @loadPatch patch
 
         if AppData.SHOW_MENU_PANNEL
             @onToggleMenu { width: AppData.MENU_PANNEL + AppData.MENU_PANNEL_BORDER }, 0

@@ -105,8 +105,8 @@ class LoadingScreen extends PIXI.Sprite
         # if we're seeing the tour for the first time, we close all pannels
         if AppData.SHOW_TOUR is true
             AppData.SHOW_MENU_PANNEL = false
-            AppData.SHOW_KEYBOARD_PANNEL = false
-            AppData.SHOW_LABELS = true
+            AppData.SHOW_KEYBOARD_PANNEL = true
+            AppData.SHOW_LABELS = false
         else
             # otherwise we read the cookie
             AppData.SHOW_MENU_PANNEL = if menu is 'show' then true else false
@@ -126,6 +126,7 @@ class LoadingScreen extends PIXI.Sprite
             Session.default.preset = data.preset
 
             Services.api.presets.loadAll 'default', (snapshot) =>
+                Session.default.preset = 'default'
                 Session.default.presets = snapshot.val()
                 @end()
         null

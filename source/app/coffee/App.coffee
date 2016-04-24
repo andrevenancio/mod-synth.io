@@ -13,7 +13,9 @@ class App extends PixiBase
     @PROMPT: new signals.Signal()
 
     @LOAD_PATCH: new signals.Signal()
+    @LOAD_PRESET: new signals.Signal()
     @PATCH_CHANGED: new signals.Signal()
+    @PRESET_CHANGED: new signals.Signal()
 
     # add/remove components
     @ADD: new signals.Signal()
@@ -49,7 +51,10 @@ class App extends PixiBase
         App.TOGGLE_MENU.add @onToggleMenu
         App.PROMPT.add @onPrompt
         App.LOAD_PATCH.add @onLoadPatch
+        App.LOAD_PRESET.add @onLoadPreset
         App.AUTO_SAVE.add @onAutoSave
+
+        App.AUTH.add @checkUserAuth
 
         App.TOGGLE_KEYBOARD.add @onToggle
         App.HELP.add @onHelp
@@ -58,12 +63,12 @@ class App extends PixiBase
         AppData.PIXI.stage.removeChild @loading
 
         # creates 2 pixi texts to force font rendering
-        t1 = new PIXI.Text("mod-synth", AppData.TEXTFORMAT.TEST_FONT_1);
+        t1 = new PIXI.Text 'mod-synth', AppData.TEXTFORMAT.TEST_FONT_1
         t1.position.x = 0;
         t1.position.y = -100;
         AppData.PIXI.stage.addChild(t1);
 
-        t2 = new PIXI.Text("mod-synth", AppData.TEXTFORMAT.TEST_FONT_2);
+        t2 = new PIXI.Text 'mod-synth', AppData.TEXTFORMAT.TEST_FONT_2
         t2.position.x = 400;
         t2.position.y = -100;
         AppData.PIXI.stage.addChild(t2);
@@ -101,11 +106,10 @@ class App extends PixiBase
         AppData.PIXI.stage.addChild @controls
 
         if AppData.SHOW_TOUR
-            @loadPatch 'default', true
             @tour.start()
         else
-            uid = Cookies.getCookie('patch') || 'default'
-            @loadPatch uid
+            patch = Cookies.getCookie('patch') || 'default'
+            @loadPatch patch
 
         if AppData.SHOW_MENU_PANNEL
             @onToggleMenu { width: AppData.MENU_PANNEL + AppData.MENU_PANNEL_BORDER }, 0
@@ -186,6 +190,26 @@ class App extends PixiBase
                 null
         null
 
+    onLoadPreset: (data) =>
+
+        # changes selected preset
+        Session.patch.preset = data.uid
+
+        # loops all components
+        preset = Session.patch.presets[Session.patch.preset]
+        # loops through all components in preset
+        for component of preset.components
+            settings = Session.DUPLICATE_OBJECT Session.SETTINGS[component].settings
+            if settings
+                for p of preset.components[component]
+                    settings[p] = preset.components[component][p]
+                Session.SETTINGS[component].settings = settings
+                App.SETTINGS_CHANGE.dispatch { component: component }
+
+        # let app know all is updated
+        App.PRESET_CHANGED.dispatch()
+        null
+
     clearPatch: (callback) =>
         for component of Session.SETTINGS
             App.REMOVE.dispatch Session.SETTINGS[component]
@@ -196,45 +220,54 @@ class App extends PixiBase
         , 1000
         null
 
-    loadPatch: (uid, skip = false) =>
-
-        # loop through data and add components with delay
-        Services.api.patches.load_patch uid, (snapshot) =>
+    loadPatch: (patch_uid) =>
+        # Loads PATCH and all PRESETS
+        Services.api.patches.load patch_uid, (snapshot) =>
             data = snapshot.val()
 
+            # if user tries to load inexistent patch
             if data is null
-                # patch in cookie doesnt exist in firebase, so we're reverting to default
-                uid = Session.default.uid
-                data = Session.default
+                @loadPatch 'default'
+                return
 
-            Session.patch.uid = uid
+            Session.patch.uid = patch_uid
             Session.patch.author = data.author
-            Session.patch.name = data.name
-            Session.patch.date = data.date
+            Session.patch.author_name = data.author_name
             Session.patch.components = data.components
-
-            return if skip is true
-            App.PATCH_CHANGED.dispatch()
-
-            i = 0
-            for component of Session.patch.components
-                @initialAdd 0.123 * (i++), Session.patch.components[component]
+            Session.patch.date = data.date
+            Session.patch.name = data.name
+            Session.patch.preset = data.preset
 
             # save cookie with latest patch
-            Cookies.setCookie 'patch', uid
+            Cookies.setCookie 'patch', patch_uid
+
+            # loads all presets
+            Services.api.presets.loadAll patch_uid, (snapshot) =>
+                Session.patch.presets = snapshot.val()
+
+                App.PATCH_CHANGED.dispatch()
+                App.PRESET_CHANGED.dispatch()
+
+                i = 0
+                for component of Session.patch.components
+                    @initialAdd 0.123 * (i++), Session.patch.components[component]
+                null
             null
         null
 
-    onAutoSave: (data) =>
-        return if AppData.TOUR_MODE
+    onAutoSave: Session.debounce (data) ->
+        return if AppData.TOUR_MODE is true
+        return if Session.patch.uid is 'default'
 
-        # save XY locally
         if data.x
-            Session.SETTINGS[data.component_session_uid].settings.x = data.x
+            Session.SETTINGS[data.component_session_uid].x = data.x
         if data.y
-            Session.SETTINGS[data.component_session_uid].settings.y = data.y
-        Services.api.patches.update_patch data.component_session_uid
-        null
+            Session.SETTINGS[data.component_session_uid].y = data.y
+        Services.api.patches.update()
+
+        return if not Services.REFERENCE.getAuth()
+        Services.api.presets.update Session.patch.preset
+    , 500
 
     onToggle: (value) =>
         Cookies.setCookie 'keyboard', if value is true then 'show' else 'hide'
@@ -242,4 +275,10 @@ class App extends PixiBase
 
     onHelp: (value) =>
         Cookies.setCookie 'labels', if value is true then 'show' else 'hide'
+        null
+
+    checkUserAuth: =>
+        if not Services.REFERENCE.getAuth()
+            @clearPatch =>
+                @loadPatch 'default'
         null

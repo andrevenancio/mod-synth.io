@@ -30,15 +30,15 @@ class ComponentPtg extends ComponentBase
             { x: -2.04 * AppData.RATIO, y: 0.6 * AppData.RATIO },
             { x: -1.63 * AppData.RATIO, y: -1.2 * AppData.RATIO }
         ]
+        @change()
 
-    onSettingsChange: (event) =>
-        if event.component is @component_session_uid
-            if Session.SETTINGS[@component_session_uid].settings.bypass is true
-                @__color = 0x3C3C3C
-                @__alpha = 0.2
-            else if Session.SETTINGS[@component_session_uid].settings.bypass is false
-                @__color = AppData.COLORS[AppData.COMPONENTS.PTG]
-                @__alpha = 1
+    change: ->
+        if Session.SETTINGS[@component_session_uid].settings.bypass is true
+            @__color = 0x3C3C3C
+            @__alpha = 0.2
+        else if Session.SETTINGS[@component_session_uid].settings.bypass is false
+            @__color = AppData.COLORS[AppData.COMPONENTS.PTG]
+            @__alpha = 1
 
         @label.alpha = @__alpha
         @graphics.alpha = @__alpha

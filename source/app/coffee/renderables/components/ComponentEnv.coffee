@@ -27,17 +27,17 @@ class ComponentEnv extends ComponentBase
             { x: -1.25 * AppData.RATIO, y: 1.95 * AppData.RATIO },
             { x: -2.04 * AppData.RATIO, y: -0.35 * AppData.RATIO }
         ]
+        @change()
 
-    onSettingsChange: (event) =>
-        if event.component is @component_session_uid
-            if Session.SETTINGS[@component_session_uid].settings.bypass is true
-                @__color = 0x3C3C3C
-                @__alpha = 0.2
-                fillColor = 0x636363
-            else if Session.SETTINGS[@component_session_uid].settings.bypass is false
-                @__color = AppData.COLORS[AppData.COMPONENTS.ENV]
-                @__alpha = 1
-                fillColor = 0xffffff
+    change: ->
+        if Session.SETTINGS[@component_session_uid].settings.bypass is true
+            @__color = 0x3C3C3C
+            @__alpha = 0.2
+            fillColor = 0x636363
+        else if Session.SETTINGS[@component_session_uid].settings.bypass is false
+            @__color = AppData.COLORS[AppData.COMPONENTS.ENV]
+            @__alpha = 1
+            fillColor = 0xffffff
 
         @icon.alpha = @__alpha
         @label.alpha = @__alpha

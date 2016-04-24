@@ -31,6 +31,9 @@ class Menu extends PIXI.Container
         @select.alpha = 0
         @addChild @select
 
+        App.PATCH_CHANGED.add @onPatchChanged
+        App.PRESET_CHANGED.add @onPresetChanged
+
         @build()
 
     build: ->
@@ -48,21 +51,28 @@ class Menu extends PIXI.Container
         @buttons.push @add
         @addChild @add
 
-        @presets = new MenuButton AppData.ASSETS.sprite.textures['ic-presets-48.png'], 'patches'
-        @presets.buttonClick = =>
+        @patches = new MenuButton AppData.ASSETS.sprite.textures['ic-patches-48.png'], 'patches'
+        @patches.buttonClick = =>
             @openSubmenu 2
+            null
+        @buttons.push @patches
+        @addChild @patches
+
+        @presets = new MenuButton AppData.ASSETS.sprite.textures['ic-presets-48.png'], 'presets'
+        @presets.buttonClick = =>
+            @openSubmenu 3
             null
         @buttons.push @presets
         @addChild @presets
 
         @midi = new MenuButton AppData.ASSETS.sprite.textures['ic-midi.png'], 'midi'
         @midi.buttonClick = =>
-            @openSubmenu 3
+            @openSubmenu 4
             null
         @buttons.push @midi
         @addChild @midi
 
-        @help = new LabelsToggle()
+        @help = new LabelsToggle AppData.SHOW_LABELS
         @help.buttonClick = =>
             AppData.SHOW_LABELS = !AppData.SHOW_LABELS
             App.HELP.dispatch AppData.SHOW_LABELS
@@ -72,6 +82,7 @@ class Menu extends PIXI.Container
         @tabs.push new LoginPannel('login')
         @tabs.push new AddPannel('add component')
         @tabs.push new PatchesPannel('patches')
+        @tabs.push new PresetsPannel('presets')
         @tabs.push new MidiPannel('midi devices')
 
         for i in [0...@tabs.length]
@@ -160,7 +171,6 @@ class Menu extends PIXI.Container
 
     openSubmenu: (index) =>
         @selectIndex = index
-
         @highlightMenu()
 
         # hide all tabs and show only the current
@@ -173,4 +183,23 @@ class Menu extends PIXI.Container
 
         # change to new size
         App.TOGGLE_MENU.dispatch { width: AppData.SUBMENU_PANNEL + AppData.MENU_PANNEL + AppData.MENU_PANNEL_BORDER }
+        null
+
+    onPatchChanged: =>
+        total = Object.keys(Session.patches).length + 1
+
+        if total > 0
+            @patches.count.visible = true
+            @patches.count.text = total
+        else
+            @patches.count.visible = false
+        null
+
+    onPresetChanged: =>
+        total = Object.keys(Session.patch.presets).length
+        if total > 0
+            @presets.count.visible = true
+            @presets.count.text = total
+        else
+            @presets.count.visible = false
         null

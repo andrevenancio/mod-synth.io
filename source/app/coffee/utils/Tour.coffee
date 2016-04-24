@@ -78,6 +78,11 @@ class Tour
         @circle.className = 'tour--circle'
         @inner.appendChild @circle
 
+        @skip = document.createElement 'div'
+        @skip.innerHTML = 'Skip Tour'
+        @skip.className = 'tour--skip'
+        @outer.appendChild @skip
+
         @started = document.createElement 'div'
         @started.innerHTML = 'Get Started'
         @started.className = 'tour--get-started'
@@ -96,9 +101,11 @@ class Tour
         if Modernizr.touch
             @circle.addEventListener 'touchend', @handleClick, false
             @started.addEventListener 'touchend', @handleClick, false
+            @skip.addEventListener 'touchend', @handleSkip, false
         else
             @circle.addEventListener 'mouseup', @handleClick, false
             @started.addEventListener 'mouseup', @handleClick, false
+            @skip.addEventListener 'mouseup', @handleSkip, false
 
         AppData.TOUR_MODE = true
         AppData.KEYPRESS_ALLOWED = false
@@ -110,9 +117,11 @@ class Tour
         if Modernizr.touch
             @circle.removeEventListener 'touchend', @handleClick, false
             @started.removeEventListener 'touchend', @handleClick, false
+            @skip.removeEventListener 'touchend', @handleSkip, false
         else
             @circle.removeEventListener 'mouseup', @handleClick, false
             @started.removeEventListener 'mouseup', @handleClick, false
+            @skip.removeEventListener 'mouseup', @handleSkip, false
 
         TweenLite.to(@outer, 0.5, { autoAlpha: 0, onComplete: =>
             # reset everything
@@ -123,6 +132,12 @@ class Tour
 
             TweenLite.to @nav, 0, { autoAlpha: 1 }
             TweenLite.to @started, 0, { autoAlpha: 0, bottom: 0 }
+            TweenLite.to @skip, 0, { autoAlpha: 0, bottom: 0 }
+
+            App.LOAD_PATCH.dispatch {
+                uid: 'default',
+                confirm: false
+            }
 
             Cookies.setCookie 'tour', 'hide'
             null
@@ -134,6 +149,16 @@ class Tour
         return if @canClick is false
         @canClick = false
 
+        @steps[@stepIndex].action()
+        @hideIndicator()
+        null
+
+    handleSkip: (e) =>
+        e.preventDefault()
+        return if @canClick is false
+        @canClick = false
+
+        @stepIndex = @steps.length-1
         @steps[@stepIndex].action()
         @hideIndicator()
         null
@@ -152,6 +177,10 @@ class Tour
         @moveTo @steps[@stepIndex].align, @steps[@stepIndex].x, @steps[@stepIndex].y
         if @stepIndex < @steps.length-1
             @showIndicator()
+            if @stepIndex is 0
+                TweenLite.to @skip, 0.5, { autoAlpha: 1, bottom: '25%', ease: Power2.easeInOut }
+            else
+                TweenLite.to @skip, 0.5, { autoAlpha: 0, ease: Power2.easeInOut }
         else
             @canClick = true
             TweenLite.to @nav, 0.3, { autoAlpha: 0 }
@@ -203,10 +232,8 @@ class Tour
     action3: =>
         component = {
             'type_uid': 1,
-            'settings': {
-                x: -(AppData.WIDTH/2+app.dashboard.x) + 200*AppData.RATIO,
-                y: -(AppData.HEIGHT/2+app.dashboard.y) + 200*AppData.RATIO
-            }
+            x: -(AppData.WIDTH/2+app.dashboard.x) + 200*AppData.RATIO,
+            y: -(AppData.HEIGHT/2+app.dashboard.y) + 200*AppData.RATIO
         }
         data = Session.ADD component
 

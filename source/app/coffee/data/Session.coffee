@@ -7,30 +7,35 @@ class Session
     # default patch data
     @default: {
         uid: null
-        author: null
         name: null
+        author: null
+        author_name: null
         date: null
+        preset: null
+        presets: {}
     }
 
     # current patch data
     @patch: {
         uid: null
-        author: null
         name: null
+        author: null
+        author_name: null
         date: null
+        preset: null
+        presets: {}
     }
+
+    @patches = {}
 
     @SETTINGS = {}
 
     # active midi inputs
     @MIDI: {}
 
-    @generateUID: ->
-        return ('0000' + (Math.random() * Math.pow(36, 4) << 0).toString(36)).slice(-4)
-
     @ADD: (component) ->
         # component unique id
-        id = component.component_session_uid || Session.generateUID()
+        id = component.component_session_uid || Services.GENERATE_UID(16)
 
         # assigns component to session settings
         Session.SETTINGS[id] = component
@@ -41,12 +46,20 @@ class Session
         # adds connections object (which only has objects on audioCapable devices)
         Session.SETTINGS[id].connections = {}
 
+        # read any saved settings from preset
+        settings = {}
+        if Session.patch.preset
+            if Session.patch.presets
+                components = Session.patch.presets[Session.patch.preset].components || {}
+                settings = components[id] || {}
+
         # imports component settings if available
-        Session.SETTINGS[id].settings = component.settings || {}
+        component.settings = settings
+        Session.SETTINGS[id].settings = settings
 
         # default X & Y
-        Session.SETTINGS[id].settings.x = if component.settings.x isnt undefined then component.settings.x else 0
-        Session.SETTINGS[id].settings.y = if component.settings.y isnt undefined then component.settings.y else 0
+        Session.SETTINGS[id].x = if component.x isnt undefined then component.x else 0
+        Session.SETTINGS[id].y = if component.y isnt undefined then component.y else 0
 
         if component.type_uid is AppData.COMPONENTS.NSG
             Session.SETTINGS[id].audioCapable          = true
@@ -54,7 +67,7 @@ class Session
             Session.SETTINGS[id].connections.PTG       = null
             Session.SETTINGS[id].settings.solo         = if component.settings.solo isnt undefined then component.settings.solo else false
             Session.SETTINGS[id].settings.mute         = if component.settings.mute isnt undefined then component.settings.mute else false
-            Session.SETTINGS[id].settings.volume       = if component.settings.volume isnt undefined then component.settings.volume else 0
+            Session.SETTINGS[id].settings.volume       = if component.settings.volume isnt undefined then component.settings.volume else -30
             Session.SETTINGS[id].settings.noise_type   = if component.settings.noise_type isnt undefined then component.settings.noise_type else AppData.NOISE_TYPE.WHITE
 
         if component.type_uid is AppData.COMPONENTS.OSC
@@ -113,3 +126,19 @@ class Session
                     c.settings.mute = if isSolo is true then true else false
                 App.SETTINGS_CHANGE.dispatch { component: c.component_session_uid }
         null
+
+    @DUPLICATE_OBJECT: (obj) ->
+        return JSON.parse(JSON.stringify(obj))
+
+    @debounce: (func, threshold, execAsap) ->
+      timeout = null
+      (args...) ->
+        obj = this
+        delayed = ->
+          func.apply(obj, args) unless execAsap
+          timeout = null
+        if timeout
+          clearTimeout(timeout)
+        else if (execAsap)
+          func.apply(obj, args)
+        timeout = setTimeout delayed, threshold || 100

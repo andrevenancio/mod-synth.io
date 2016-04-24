@@ -49,7 +49,7 @@ class Tour
             align: 'bl'
             x: '50%',
             y: '25%',
-            instructions: 'Last, you can use your keyboard or mouse to make sound. Enjoy!'
+            instructions: 'You can use your keyboard or mouse to make sound.'
             action: @action5
         }
 

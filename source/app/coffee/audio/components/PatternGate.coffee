@@ -9,7 +9,6 @@ class PatternGate extends Component
 
         App.SETTINGS_CHANGE.add @onSettingsChange
 
-        @current16thNote
         @lookahead = 25.0
         @scheduleAheadTime = 0.1
         @nextNoteTime = 0.0

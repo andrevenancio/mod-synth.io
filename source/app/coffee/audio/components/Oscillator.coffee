@@ -100,7 +100,6 @@ class Oscillator extends Component
 
                 @activeOscillators[index].stop release
                 @activeOscillators.splice index, 1
-                null
             else
                 @activeOscillators[0].frequency.cancelScheduledValues now
                 @activeOscillators[0].frequency.setTargetAtTime @active[@active.length-1] * @parameters.octave, 0, @parameters.portamento / 1000.0 || 0.001

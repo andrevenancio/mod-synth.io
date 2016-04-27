@@ -92,7 +92,6 @@ class Prompt
             return false
         else
             return true
-        null
 
     show: (data) ->
         if data.onConfirm

@@ -36,7 +36,6 @@ class LoadingScreen extends PIXI.Sprite
         @pos2 = 86*AppData.RATIO
 
         @preloadLoadingAssets()
-        null
 
     preloadLoadingAssets: ->
 

@@ -40,7 +40,6 @@ class LabelsToggle extends PIXI.Container
 
         @enable()
 
-        @selected
         if @selected is true
             @onOver()
         @swap()

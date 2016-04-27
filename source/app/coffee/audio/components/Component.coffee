@@ -38,8 +38,8 @@ class Component
         if input instanceof GainNode or input instanceof AudioDestinationNode
             @output.connect input
         else
-            throw new Error 'You can only connect to GainNode or AudioDestinationNode.'
             @disconnect()
+            console.log 'You can only connect to GainNode or AudioDestinationNode.'
         null
 
     disconnect: ->

@@ -20,7 +20,7 @@ class PatchesPannel extends Pannel
     build: (data) =>
         @clear()
 
-        isLoggedIn = Services.REFERENCE.getAuth() || false
+        isLoggedIn = Services.REFERENCE.auth().currentUser || false
 
         @button_NEW = new SubmenuButton 'save to new patch', AppData.ASSETS.sprite.textures['ic-add-32.png']
         @button_NEW.buttonClick = @createPatch
@@ -128,7 +128,7 @@ class PatchesPannel extends Pannel
         null
 
     checkUserAuth: =>
-        if Services.REFERENCE.getAuth()
+        if Services.REFERENCE.auth().currentUser
             @checkUserPatches()
         else
             Session.patches = {}

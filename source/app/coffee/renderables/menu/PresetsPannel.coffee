@@ -19,7 +19,7 @@ class PresetsPannel extends Pannel
     build: =>
         @clear()
 
-        isLoggedIn = Services.REFERENCE.getAuth() || false
+        isLoggedIn = Services.REFERENCE.auth().currentUser || false
         if Session.patch.uid is 'default'
             isLoggedIn = false
 

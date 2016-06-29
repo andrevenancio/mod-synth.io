@@ -1,15 +1,22 @@
 # http://jsfiddle.net/firebase/a221m6pb/
 # https://jsfiddle.net/andrevenancio/07j0p9ub/
+
+config = {
+    apiKey: "AIzaSyBcFB1TdT_ZLULA0PHSqKg4NHUZRFosJ4g",
+    authDomain: "mod-synth.firebaseapp.com",
+    databaseURL: "https://mod-synth.firebaseio.com",
+    storageBucket: "",
+}
+firebase.initializeApp(config);
+
 class Services
 
-    # end point to firebase app
-    @REFERENCE: new Firebase "https://mod-synth.firebaseio.com"
+    @REFERENCE: firebase,
 
-    @PATCHES: @REFERENCE.child('patches');
+    @PATCHES: firebase.database().ref('patches')
 
-    @PRESETS: @REFERENCE.child('presets');
+    @PRESETS: firebase.database().ref('presets');
 
-    # http://www.broofa.com/Tools/Math.uuid.htm
     @GENERATE_UID: (len, radix) ->
         chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('')
         uuid = []
@@ -36,35 +43,41 @@ class Services
 
         login:
             twitter: (callback) ->
-                Services.REFERENCE.authWithOAuthPopup "twitter", (error, authData) ->
-                    if error
-                        console.warn 'Login Failed!', error
-                    else
-                        callback authData
-                    null
+                provider = new firebase.auth.TwitterAuthProvider();
+
+                firebase.auth()
+                    .signInWithPopup(provider)
+                    .then (result) ->
+                        callback result
+                    .catch (error) ->
+                        console.error(error);
                 null
 
             facebook: (callback) ->
-                Services.REFERENCE.authWithOAuthPopup "facebook", (error, authData) ->
-                    if error
-                        console.warn 'Login Failed!', error
-                    else
-                        callback authData
-                    null
-                , { scope: "email," }
+                provider = new firebase.auth.FacebookAuthProvider();
+                provider.addScope('email');
+
+                firebase.auth()
+                    .signInWithPopup(provider)
+                    .then (result) ->
+                        callback result
+                    .catch (error) ->
+                        console.error(error);
                 null
 
             github: (callback) ->
-                Services.REFERENCE.authWithOAuthPopup "github", (error, authData) ->
-                    if error
-                        console.warn 'Login Failed!', error
-                    else
-                        callback authData
-                    null
+                provider = new firebase.auth.GithubAuthProvider();
+
+                firebase.auth()
+                    .signInWithPopup(provider)
+                    .then (result) ->
+                        callback result
+                    .catch (error) ->
+                        console.error(error);
                 null
 
             logout: (callback) ->
-                Services.REFERENCE.unauth()
+                firebase.auth().signOut()
                 if callback
                     callback()
                 null
@@ -72,22 +85,26 @@ class Services
         patches:
 
             getAll: (callback) ->
-                if Services.REFERENCE.getAuth()
-                    Services.PATCHES.orderByChild('author').equalTo(Services.REFERENCE.getAuth().uid).once 'value', callback
+                if Services.REFERENCE.auth().currentUser
+                    # console.log('%cpatches', 'background-color: black; color: green', 'getAll');
+                    Services.PATCHES.orderByChild('author').equalTo(Services.REFERENCE.auth().currentUser.providerData[0].uid).once 'value', callback
                 null
 
             load: (patch_id, callback) ->
+                # console.log('%cpatches', 'background-color: black; color: green', 'load');
                 patch = Services.PATCHES.child(patch_id)
                 patch.once 'value', callback
                 null
 
             save: (patch_name, callback) ->
-                if Services.REFERENCE.getAuth()
+                if Services.REFERENCE.auth().currentUser
+                    # console.log('%cpatches', 'background-color: black; color: green', 'save');
+                    providerData = Services.REFERENCE.auth().currentUser.providerData[0];
 
                     # adds data
                     Session.patch.uid = Services.GENERATE_UID(16)
-                    Session.patch.author = Services.REFERENCE.getAuth().uid
-                    Session.patch.author_name = Services.REFERENCE.getAuth()[Services.REFERENCE.getAuth().auth.provider].displayName
+                    Session.patch.author = providerData.uid
+                    Session.patch.author_name = providerData.displayName
                     Session.patch.components = Session.SETTINGS
                     Session.patch.date = String(Date.now())
                     Session.patch.name = patch_name
@@ -109,7 +126,8 @@ class Services
                 null
 
             remove: (patch_id, callback) ->
-                if Services.REFERENCE.getAuth()
+                if Services.REFERENCE.auth().currentUser
+                    # console.log('%cpatches', 'background-color: black; color: green', 'remove');
                     patch = Services.PATCHES.child(patch_id)
                     patch.remove (snapshot) =>
                         Services.api.presets.removeAll patch_id, callback
@@ -119,7 +137,9 @@ class Services
             update: (callback) ->
                 return if Session.patch.uid is 'default'
 
-                if Services.REFERENCE.getAuth()
+                if Services.REFERENCE.auth().currentUser
+                    # console.log('%cpatches', 'background-color: black; color: green', 'update');
+
                     patch = Services.PATCHES.child(Session.patch.uid)
                     component = patch.child('components')
                     component.remove =>
@@ -136,11 +156,14 @@ class Services
         presets:
 
             loadAll: (patch_id, callback) ->
+                # console.log('%cpreset', 'background-color: black; color: red', 'loadAll');
                 presets = Services.PRESETS.child(patch_id)
                 presets.once 'value', callback
                 null
 
             save: (patch_id, preset_id, preset_name, callback) ->
+                # console.log('%cpreset', 'background-color: black; color: red', 'save');
+
                 patch = Services.PRESETS.child(patch_id)
                 preset = patch.child(preset_id)
                 preset.set({
@@ -154,11 +177,13 @@ class Services
                 null
 
             removeAll: (patch_id, callback) ->
+                # console.log('%cpreset', 'background-color: black; color: red', 'removeAll');
                 presets = Services.PRESETS.child(patch_id)
                 presets.remove callback
                 null
 
             remove: (patch_id, callback) ->
+                # console.log('%cpreset', 'background-color: black; color: red', 'remove');
                 presets = Services.PRESETS.child(Session.patch.uid)
                 preset = presets.child(patch_id)
                 preset.remove (error) =>
@@ -174,6 +199,7 @@ class Services
             # updates settings of known components
             update: (id, callback) ->
                 return if Session.patch.uid is 'default'
+                # console.log('%cpreset', 'background-color: black; color: red', 'update');
 
                 presets = Services.PRESETS.child(Session.patch.uid)
                 preset = presets.child(id)
@@ -206,6 +232,8 @@ class Services
             # updates settings of known components
             updateAdd: (id, data) ->
                 return if Session.patch.uid is 'default'
+                # console.log('%cpreset', 'background-color: black; color: red', 'updateAdd');
+
                 settings = Session.DUPLICATE_OBJECT data.settings
 
                 presets = Services.PRESETS.child(Session.patch.uid)
@@ -214,6 +242,8 @@ class Services
                 component = components.child(data.component_session_uid)
                 component.set settings
                 component.once 'value', (snapshot) =>
+                    if Session.patch.presets[id].components is null
+                        Session.patch.presets[id].components = {}
                     Session.patch.presets[id].components[data.component_session_uid] = snapshot.val()
                     null
                 null
@@ -221,6 +251,7 @@ class Services
             # removes component
             updateRemove: (id, component_session_uid) ->
                 return if Session.patch.uid is 'default'
+                # console.log('%cpreset', 'background-color: black; color: red', 'updateRemove');
 
                 presets = Services.PRESETS.child(Session.patch.uid)
                 preset = presets.child(id)

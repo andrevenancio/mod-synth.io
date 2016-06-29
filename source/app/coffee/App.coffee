@@ -265,7 +265,7 @@ class App extends PixiBase
             Session.SETTINGS[data.component_session_uid].y = data.y
         Services.api.patches.update()
 
-        return if not Services.REFERENCE.getAuth()
+        return if not Services.REFERENCE.auth().currentUser
         Services.api.presets.update Session.patch.preset
     , 500
 
@@ -278,7 +278,7 @@ class App extends PixiBase
         null
 
     checkUserAuth: =>
-        if not Services.REFERENCE.getAuth()
+        if not Services.REFERENCE.auth().currentUser
             @clearPatch =>
                 @loadPatch 'default'
         null

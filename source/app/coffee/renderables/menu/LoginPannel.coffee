@@ -17,11 +17,11 @@ class LoginPannel extends Pannel
     build: =>
         @clear()
 
-        if Services.REFERENCE.getAuth()
-            data = Services.REFERENCE.getAuth()
+        if Services.REFERENCE.auth().currentUser
+            data = Services.REFERENCE.auth().currentUser.providerData[0]
 
             # picture
-            img = new PIXI.Sprite.fromImage data[data.provider].profileImageURL
+            img = new PIXI.Sprite.fromImage data.photoURL
             img.anchor.x = 0.5
             img.anchor.y = 0.5
             img.width = AppData.ICON_SIZE_2
@@ -31,14 +31,14 @@ class LoginPannel extends Pannel
             @addChild img
 
             # title (username/name)
-            switch data.provider
+            switch data.providerId
                 when 'twitter'
-                    @label.text = '@' + data.twitter.username.toUpperCase()
+                    @label.text = '@' + data.username.toUpperCase()
                 else
-                    @label.text = data[data.provider].displayName.toUpperCase()
+                    @label.text = data.displayName.toUpperCase()
             @label.position.x = img.x + AppData.ICON_SIZE_2
 
-            @title = new PIXI.Text 'LOGGED VIA ' + data.provider.toUpperCase(), AppData.TEXTFORMAT.MENU_SUBTITLE
+            @title = new PIXI.Text 'LOGGED VIA ' + data.providerId.toUpperCase(), AppData.TEXTFORMAT.MENU_SUBTITLE
             @title.tint = 0x646464
             @title.scale.x = @title.scale.y = 0.5
             @title.position.x = AppData.PADDING
@@ -74,7 +74,7 @@ class LoginPannel extends Pannel
         null
 
     align: ->
-        data = Services.REFERENCE.getAuth()
+        data = Services.REFERENCE.auth().currentUser
         for i in [0...@elements.length]
             if i is 0
                 @elements[i].y = if data then @title.y + @title.height + AppData.PADDING/2 else AppData.MENU_PANNEL

@@ -144,8 +144,8 @@ class LoadingScreen extends PIXI.Sprite
         # min width: 800
         # min height: 600
         # if iOS
-        # console.log window.screen.availWidth, window.screen.availHeight
-        if window.screen.availWidth < 768 || window.screen.availHeight < 1024
+        # console.log 'resolution', window.screen.availWidth, window.screen.availHeight
+        if window.screen.availWidth < 800 || window.screen.availHeight < 600
             @soon = new Soon()
             @soon.x = AppData.WIDTH / 2
             @soon.y = AppData.HEIGHT / 2

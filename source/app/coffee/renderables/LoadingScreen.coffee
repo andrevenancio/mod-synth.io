@@ -139,11 +139,13 @@ class LoadingScreen extends PIXI.Sprite
 
     end: ->
         # check if we're on iPad
-        iOS = /iPad|iPhone|iPod/.test navigator.userAgent
+        # iOS = /iPad|iPhone|iPod/.test navigator.userAgent
 
         # min width: 800
         # min height: 600
-        if iOS
+        # if iOS
+        # console.log window.screen.availWidth, window.screen.availHeight
+        if window.screen.availWidth < 768 || window.screen.availHeight < 1024
             @soon = new Soon()
             @soon.x = AppData.WIDTH / 2
             @soon.y = AppData.HEIGHT / 2

@@ -12,7 +12,7 @@ class Lfo extends Component
 
         @component = Audio.CONTEXT.createOscillator()
         @component.type = @type
-        @component.frequency.value = @frequency
+        @component.frequency.setValueAtTime @frequency, Audio.CONTEXT.currentTime
         @component.connect @aux
         @component.start()
 
@@ -42,7 +42,7 @@ class Lfo extends Component
         set: (value) ->
             return @parameters.frequency if @parameters.frequency is value
             @parameters.frequency = value
-            @component.frequency.value = @parameters.frequency
+            @component.frequency.setValueAtTime @parameters.frequency, Audio.CONTEXT.currentTime
             return @parameters.frequency
 
     @property 'depth',
@@ -51,5 +51,5 @@ class Lfo extends Component
         set: (value) ->
             return @parameters.depth if @parameters.depth is value
             @parameters.depth = value
-            @aux.gain.value = @parameters.depth
+            @aux.gain.setValueAtTime @parameters.depth, Audio.CONTEXT.currentTime
             return @parameters.depth

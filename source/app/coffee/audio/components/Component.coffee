@@ -9,12 +9,12 @@ class Component
 
         # check if is audioCapable
         @aux = Audio.CONTEXT.createGain()
-        @aux.gain.value = 1.0
+        @aux.gain.setValueAtTime 1.0, Audio.CONTEXT.currentTime
         @aux.connect @output
 
         # used to change stuff
         @pre = Audio.CONTEXT.createGain()
-        @pre.gain.value = 1.0
+        @pre.gain.setValueAtTime 1.0, Audio.CONTEXT.currentTime
         @pre.connect @aux
 
         if data.audioCapable
@@ -57,7 +57,7 @@ class Component
             volume = Math.pow(value/1, 2)
 
         if @output
-            @output.gain.value = volume
+            @output.gain.setValueAtTime volume, Audio.CONTEXT.currentTime
         null
 
     # returns current ramp value

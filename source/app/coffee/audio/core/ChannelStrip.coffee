@@ -5,7 +5,7 @@ class ChannelStrip
 
         # channel strip output
         @output = Audio.CONTEXT.createGain()
-        @output.gain.value = 0.4
+        @output.gain.setValueAtTime 0.4, Audio.CONTEXT.currentTime
 
         # channel strip input
         @input = Audio.CONTEXT.createGain()
@@ -19,7 +19,7 @@ class ChannelStrip
             volume = Math.pow(volume/1, 2)
 
         if @input
-            @input.gain.value = volume
+            @input.gain.setValueAtTime volume, Audio.CONTEXT.currentTime
         null
 
     connect: (otherDeviceInput) ->

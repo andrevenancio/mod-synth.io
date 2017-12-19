@@ -7,7 +7,7 @@ class NoiseGenerator extends Component
         @parameters.type = Audio.NOISE_TYPE[data.settings.noise_type]
 
         @envelope = Audio.CONTEXT.createGain()
-        @envelope.gain.value = 0.0
+        @envelope.gain.setValueAtTime 0.0, Audio.CONTEXT.currentTime
         @envelope.connect @pre
 
         @buffer = @getWhite()
@@ -17,7 +17,7 @@ class NoiseGenerator extends Component
 
     destroy: ->
         @generator.stop 0
-        @output.gain.value = 0.0
+        @output.gain.setValueAtTime 0.0, Audio.CONTEXT.currentTime
         @generator = null
         null
 

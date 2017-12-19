@@ -14,9 +14,9 @@ class Flt extends Component
 
         @component = Audio.CONTEXT.createBiquadFilter()
         @component.type = @type
-        @component.frequency.value = @frequency
-        @component.detune.value = @detune
-        @component.Q.value = @q
+        @component.frequency.setValueAtTime @frequency, Audio.CONTEXT.currentTime
+        @component.detune.setValueAtTime @detune, Audio.CONTEXT.currentTime
+        @component.Q.setValueAtTime @q, Audio.CONTEXT.currentTime
 
     #     @update()
     #
@@ -53,7 +53,7 @@ class Flt extends Component
         set: (value) ->
             return @parameters.frequency if @parameters.frequency is value
             @parameters.frequency = value
-            @component.frequency.value = @parameters.frequency
+            @component.frequency.setValueAtTime @parameters.frequency, Audio.CONTEXT.currentTime
             return @parameters.frequency
 
     @property 'detune',
@@ -62,7 +62,7 @@ class Flt extends Component
         set: (value) ->
             return @parameters.detune if @parameters.detune is value
             @parameters.detune = value
-            @component.detune.value = @parameters.detune
+            @component.detune.setValueAtTime @parameters.detune, Audio.CONTEXT.currentTime
             return @parameters.detune
 
     @property 'q',
@@ -71,5 +71,5 @@ class Flt extends Component
         set: (value) ->
             return @parameters.q if @parameters.q is value
             @parameters.q = value
-            @component.Q.value = @parameters.q
+            @component.Q.setValueAtTime @parameters.q, Audio.CONTEXT.currentTime
             return @parameters.q

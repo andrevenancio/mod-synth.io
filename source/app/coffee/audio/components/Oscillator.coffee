@@ -28,7 +28,7 @@ class Oscillator extends Component
         # create note on off gain
         nofg = Audio.CONTEXT.createGain()
         nofg.connect @pre
-        nofg.gain.value = 0.0
+        nofg.gain.setValueAtTime 0.0, now
 
         oscillator = Audio.CONTEXT.createOscillator()
         oscillator.type = @parameters.type

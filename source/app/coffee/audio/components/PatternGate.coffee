@@ -23,7 +23,7 @@ class PatternGate extends Component
             null
         @timerWorker.postMessage { 'interval': @lookahead }
 
-        @aux.gain.value = 0.0;
+        @aux.gain.setValueAtTime 0.0, Audio.CONTEXT.currentTime
         @play()
 
     destroy: ->

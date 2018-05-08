@@ -73,7 +73,52 @@ class LoadingScreen extends PIXI.Sprite
         @icon3.mask = @mask2
 
         loader.reset()
+
+        # detect if browser is chrome and add warning to it
+        isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+
+        if isChrome
+            @click = new PIXI.Text 'Authorize AudioContext on CHROME', AppData.TEXTFORMAT.SOON
+            @click.anchor.x = 0.5
+            @click.anchor.y = 1
+            @click.scale.x = @click.scale.y = 0.5
+            @click.tint = 0xffffff
+            @click.x = AppData.WIDTH / 2
+            @click.y = AppData.HEIGHT / 2
+            @click.interactive = @click.buttonMode = true
+            if Modernizr.touch
+                @click.on 'touchend', @onUp
+            else
+                @click.on 'mouseup', @onUp
+            @addChild @click
+
+            @more = new PIXI.Text 'Why am I seeing this?', AppData.TEXTFORMAT.HINT
+            @more.anchor.x = 0.5
+            @more.anchor.y = 1
+            @more.scale.x = @more.scale.y = 0.5
+            @more.tint = 0xffffff
+            @more.x = AppData.WIDTH / 2
+            @more.y = AppData.HEIGHT / 2 + 50
+            @more.interactive = @more.buttonMode = true
+            if Modernizr.touch
+                @more.on 'touchend', @readMore
+            else
+                @more.on 'mouseup', @readMore
+            @addChild @more
+        else
+            @start()
+        null
+
+
+
+    onUp: =>
+        @removeChild @click
+        @removeChild @more
         @start()
+        null
+
+    readMore: =>
+        window.open 'https://developers.google.com/web/updates/2017/09/autoplay-policy-changes#webaudio'
         null
 
     preloadAssets: =>
@@ -159,6 +204,10 @@ class LoadingScreen extends PIXI.Sprite
     onResize: =>
         @holder.x = AppData.WIDTH / 2
         @holder.y = AppData.HEIGHT / 2
+
+        if @click
+            @click.x = AppData.WIDTH / 2
+            @click.y = AppData.HEIGHT / 2
 
         return if not @soon
         @soon.x = AppData.WIDTH / 2

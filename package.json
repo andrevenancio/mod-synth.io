@@ -26,6 +26,6 @@
     "uglify-js": "^3.6.0"
   },
   "devDependencies": {
-    "coffeescript": "^1.12.7"
+    "coffeescript": "^2.4.1"
   }
 }

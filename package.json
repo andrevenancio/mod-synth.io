@@ -23,7 +23,7 @@
     "grunt-contrib-sass": "~1.0.0",
     "grunt-contrib-uglify": "~4.0.1",
     "grunt-contrib-watch": "~1.1.0",
-    "uglify-js": "^3.6.0"
+    "uglify-js": "^3.6.1"
   },
   "devDependencies": {
     "coffeescript": "^2.4.1"

@@ -7,8 +7,8 @@ class MidiController
             navigator.requestMIDIAccess()
                 .then @onSuccess
                 .catch @onError
-        # else
-        #    'Your browser doesn\'t support the Web MIDI API
+        else
+           'Your browser doesn\'t support the Web MIDI API'
 
     onSuccess: (midi) =>
         # 'Web MIDI API connected. inputs', midi.inputs.size, 'outputs', midi.outputs.size
@@ -38,6 +38,8 @@ class MidiController
         note = e.data[1]
         velocity = e.data[2]
         controller = Session.MIDI[e.target.name]
+
+        console.log(e);
 
         if channel is 9
             return

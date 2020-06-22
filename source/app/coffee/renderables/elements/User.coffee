@@ -20,7 +20,6 @@ class User extends PIXI.Container
         circleMask.endFill()
         @addChild circleMask
 
-        console.log('here', user);
         picture = new PIXI.Sprite(PIXI.Texture.fromImage(user.twitter.photoURL, true))
         picture.anchor.x = picture.anchor.y = 0.5
         picture.scale.x = picture.scale.y = AppData.RATIO

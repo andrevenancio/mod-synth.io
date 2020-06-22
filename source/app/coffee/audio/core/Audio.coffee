@@ -7,7 +7,7 @@ class Audio
         NoiseGenerator: 0
 
     # audio context
-    @CONTEXT: new (window.AudioContext || window.webkitAudioContext)()
+    @CONTEXT: null
 
     # wave type
     @WAVE_TYPE = []

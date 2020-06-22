@@ -39,8 +39,6 @@ class MidiController
         velocity = e.data[2]
         controller = Session.MIDI[e.target.name]
 
-        console.log(e);
-
         if channel is 9
             return
 
@@ -48,7 +46,7 @@ class MidiController
             @noteOff note
         else if cmd is 9
             return if controller is undefined
-            @noteOn note, velocity/127.0
+            @noteOn note, velocity / 127.0
         else if cmd is 11
             # make a mapping controller where user can device what button controls what
             return if controller is undefined

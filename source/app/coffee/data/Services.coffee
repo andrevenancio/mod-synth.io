@@ -86,19 +86,16 @@ class Services
 
             getAll: (callback) ->
                 if Services.REFERENCE.auth().currentUser
-                    # console.log('%cpatches', 'background-color: black; color: green', 'getAll');
                     Services.PATCHES.orderByChild('author').equalTo(Services.REFERENCE.auth().currentUser.providerData[0].uid).once 'value', callback
                 null
 
             load: (patch_id, callback) ->
-                # console.log('%cpatches', 'background-color: black; color: green', 'load');
                 patch = Services.PATCHES.child(patch_id)
                 patch.once 'value', callback
                 null
 
             save: (patch_name, callback) ->
                 if Services.REFERENCE.auth().currentUser
-                    # console.log('%cpatches', 'background-color: black; color: green', 'save');
                     providerData = Services.REFERENCE.auth().currentUser.providerData[0];
 
                     # adds data
@@ -127,7 +124,6 @@ class Services
 
             remove: (patch_id, callback) ->
                 if Services.REFERENCE.auth().currentUser
-                    # console.log('%cpatches', 'background-color: black; color: green', 'remove');
                     patch = Services.PATCHES.child(patch_id)
                     patch.remove (snapshot) =>
                         Services.api.presets.removeAll patch_id, callback
@@ -138,8 +134,6 @@ class Services
                 return if Session.patch.uid is 'default'
 
                 if Services.REFERENCE.auth().currentUser
-                    # console.log('%cpatches', 'background-color: black; color: green', 'update');
-
                     patch = Services.PATCHES.child(Session.patch.uid)
                     component = patch.child('components')
                     component.remove =>
@@ -162,8 +156,6 @@ class Services
                 null
 
             save: (patch_id, preset_id, preset_name, callback) ->
-                # console.log('%cpreset', 'background-color: black; color: red', 'save');
-
                 patch = Services.PRESETS.child(patch_id)
                 preset = patch.child(preset_id)
                 preset.set({
@@ -177,13 +169,11 @@ class Services
                 null
 
             removeAll: (patch_id, callback) ->
-                # console.log('%cpreset', 'background-color: black; color: red', 'removeAll');
                 presets = Services.PRESETS.child(patch_id)
                 presets.remove callback
                 null
 
             remove: (patch_id, callback) ->
-                # console.log('%cpreset', 'background-color: black; color: red', 'remove');
                 presets = Services.PRESETS.child(Session.patch.uid)
                 preset = presets.child(patch_id)
                 preset.remove (error) =>
@@ -199,7 +189,6 @@ class Services
             # updates settings of known components
             update: (id, callback) ->
                 return if Session.patch.uid is 'default'
-                # console.log('%cpreset', 'background-color: black; color: red', 'update');
 
                 presets = Services.PRESETS.child(Session.patch.uid)
                 preset = presets.child(id)
@@ -232,7 +221,6 @@ class Services
             # updates settings of known components
             updateAdd: (id, data) ->
                 return if Session.patch.uid is 'default'
-                # console.log('%cpreset', 'background-color: black; color: red', 'updateAdd');
 
                 settings = Session.DUPLICATE_OBJECT data.settings
 
@@ -251,7 +239,6 @@ class Services
             # removes component
             updateRemove: (id, component_session_uid) ->
                 return if Session.patch.uid is 'default'
-                # console.log('%cpreset', 'background-color: black; color: red', 'updateRemove');
 
                 presets = Services.PRESETS.child(Session.patch.uid)
                 preset = presets.child(id)

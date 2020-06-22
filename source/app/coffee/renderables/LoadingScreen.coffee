@@ -1,4 +1,5 @@
 # import renderables.Soon
+# import audio.core.Audio
 class LoadingScreen extends PIXI.Sprite
 
     constructor: (@callback) ->
@@ -50,7 +51,6 @@ class LoadingScreen extends PIXI.Sprite
         null
 
     preloadLoadingAssetsComplete: (loader, resources) =>
-
         @icon1.texture = resources.preloader.textures['preload1.png']
         @icon2.texture = resources.preloader.textures['preload2.png']
         @icon3.texture = resources.preloader.textures['preload3.png']
@@ -74,55 +74,23 @@ class LoadingScreen extends PIXI.Sprite
 
         loader.reset()
 
-        # detect if browser is chrome and add warning to it
-        isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+        @start()
 
-        if isChrome
-            @click = new PIXI.Text 'Authorize AudioContext on CHROME', AppData.TEXTFORMAT.SOON
-            @click.anchor.x = 0.5
-            @click.anchor.y = 1
-            @click.scale.x = @click.scale.y = 0.5
-            @click.tint = 0xffffff
-            @click.x = AppData.WIDTH / 2
-            @click.y = AppData.HEIGHT / 2
-            @click.interactive = @click.buttonMode = true
-            if Modernizr.touch
-                @click.on 'touchend', @onUp
-            else
-                @click.on 'mouseup', @onUp
-            @addChild @click
-
-            @more = new PIXI.Text 'Why am I seeing this?', AppData.TEXTFORMAT.HINT
-            @more.anchor.x = 0.5
-            @more.anchor.y = 1
-            @more.scale.x = @more.scale.y = 0.5
-            @more.tint = 0xffffff
-            @more.x = AppData.WIDTH / 2
-            @more.y = AppData.HEIGHT / 2 + 50
-            @more.interactive = @more.buttonMode = true
-            if Modernizr.touch
-                @more.on 'touchend', @readMore
-            else
-                @more.on 'mouseup', @readMore
-            @addChild @more
-        else
-            @start()
         null
-
-
 
     onUp: =>
-        @removeChild @click
-        @removeChild @more
-        @start()
-        null
+        Audio.CONTEXT = new (window.AudioContext || window.webkitAudioContext)()
 
-    readMore: =>
-        window.open 'https://developers.google.com/web/updates/2017/09/autoplay-policy-changes#webaudio'
+        TweenMax.to @click, 1, { alpha: 0, ease: Power4.easeInOut, onComplete: () =>
+            @removeChild @click
+        }
+
+
+        # does end animation, and in the end call the callback
+        TweenMax.to @holder, 1.0, { alpha: 0, delay: 0.5, ease: Power2.easeInOut, onComplete: @callback }
         null
 
     preloadAssets: =>
-
         if AppData.RATIO is 1
             PIXI.loader.add 'sprite', '/sprites/sprite1x.json'
         else
@@ -172,7 +140,35 @@ class LoadingScreen extends PIXI.Sprite
             Services.api.presets.loadAll 'default', (snapshot) =>
                 Session.default.preset = 'default'
                 Session.default.presets = snapshot.val()
-                @end()
+                
+                if window.screen.availWidth < 800 || window.screen.availHeight < 600
+                    @soon = new Soon()
+                    @soon.x = AppData.WIDTH / 2
+                    @soon.y = AppData.HEIGHT / 2
+                    @soon.alpha = 0;
+                    @addChild @soon
+
+                    TweenMax.to @soon, 1, { alpha: 1, ease: Power4.easeInOut }
+
+                else
+                    # add CLICK TO START
+                    @click = new PIXI.Text 'Click to Start', AppData.TEXTFORMAT.SOON
+                    @click.anchor.x = 0.5
+                    @click.anchor.y = 1
+                    @click.scale.x = @click.scale.y = 0.5
+                    @click.tint = 0xffffff
+                    @click.x = AppData.WIDTH / 2
+                    @click.y = AppData.HEIGHT / 2 + 100
+                    @click.alpha = 0
+                    @click.interactive = @click.buttonMode = true
+                    @addChild @click
+
+                    TweenMax.to @click, 1, { alpha: 1, delay: 0.3, ease: Power4.easeInOut }
+
+                    if Modernizr.touch
+                        @click.on 'touchend', @onUp
+                    else
+                        @click.on 'mouseup', @onUp
         null
 
     start: ->
@@ -182,32 +178,14 @@ class LoadingScreen extends PIXI.Sprite
         TweenMax.to @icon3, 1, { x: @pos2, alpha: 1, ease: Power4.easeInOut, delay: 0.1 }
         null
 
-    end: ->
-        # check if we're on iPad
-        # iOS = /iPad|iPhone|iPod/.test navigator.userAgent
-
-        # min width: 800
-        # min height: 600
-        # if iOS
-        # console.log 'resolution', window.screen.availWidth, window.screen.availHeight
-        if window.screen.availWidth < 800 || window.screen.availHeight < 600
-            @soon = new Soon()
-            @soon.x = AppData.WIDTH / 2
-            @soon.y = AppData.HEIGHT / 2
-            @addChild @soon
-            return
-
-        # does end animation, and in the end call the callback
-        TweenMax.to @holder, 1.0, { alpha: 0, delay: 0.5, ease: Power2.easeInOut, onComplete: @callback }
-        null
-
     onResize: =>
         @holder.x = AppData.WIDTH / 2
         @holder.y = AppData.HEIGHT / 2
 
         if @click
             @click.x = AppData.WIDTH / 2
-            @click.y = AppData.HEIGHT / 2
+            @click.y = AppData.HEIGHT / 2 + 100
+
 
         return if not @soon
         @soon.x = AppData.WIDTH / 2

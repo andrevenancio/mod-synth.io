@@ -1,64 +1,168 @@
 <!DOCTYPE html>
 <html class="no-js" lang="en-gb">
-    <head>
-        <title>MOD Synth</title>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="mobile-web-app-capable" content="yes" />
+  <head>
+    <title>MOD Synth</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
 
-        <link rel="shortcut icon" href="/img/icons/favicon.ico" type="image/x-icon" />
+    <link
+      rel="shortcut icon"
+      href="/img/icons/favicon.ico"
+      type="image/x-icon"
+    />
 
-        <link rel="apple-touch-icon" href="/img/icons/apple-touch-icon.png" />
-        <link rel="apple-touch-icon" sizes="57x57" href="/img/icons/apple-touch-icon-57x57.png" />
-        <link rel="apple-touch-icon" sizes="72x72" href="/img/icons/apple-touch-icon-72x72.png" />
-        <link rel="apple-touch-icon" sizes="76x76" href="/img/icons/apple-touch-icon-76x76.png" />
-        <link rel="apple-touch-icon" sizes="114x114" href="/img/icons/apple-touch-icon-114x114.png" />
-        <link rel="apple-touch-icon" sizes="120x120" href="/img/icons/apple-touch-icon-120x120.png" />
-        <link rel="apple-touch-icon" sizes="144x144" href="/img/icons/apple-touch-icon-144x144.png" />
-        <link rel="apple-touch-icon" sizes="152x152" href="/img/icons/apple-touch-icon-152x152.png" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/img/icons/apple-touch-icon-180x180.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="57x57"
+      href="/img/icons/apple-icon-57x57.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="60x60"
+      href="/img/icons/apple-icon-60x60.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="72x72"
+      href="/img/icons/apple-icon-72x72.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="76x76"
+      href="/img/icons/apple-icon-76x76.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="114x114"
+      href="/img/icons/apple-icon-114x114.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="120x120"
+      href="/img/icons/apple-icon-120x120.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="144x144"
+      href="/img/icons/apple-icon-144x144.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="152x152"
+      href="/img/icons/apple-icon-152x152.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/img/icons/apple-icon-180x180.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="192x192"
+      href="/img/icons/android-icon-192x192.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/img/icons/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="96x96"
+      href="/img/icons/favicon-96x96.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/img/icons/favicon-16x16.png"
+    />
 
-        <meta name="description" content="MOD is an experiment where you can create your own modular synthesizer, or emulate different synths by simply drag and drop components." />
-        <meta name="keywords" content="webgl, webaudio, webmidi, box2d, pixi, pixi.js, coffeescript, javascript, js" />
+    <meta
+      name="description"
+      content="MOD is an experiment where you can create your own modular synthesizer, or emulate different synths by simply drag and drop components."
+    />
+    <meta
+      name="keywords"
+      content="webgl, webaudio, webmidi, box2d, pixi, pixi.js, coffeescript, javascript, js"
+    />
 
-        <meta property="og:title" content="MOD Synth" />
-        <meta property="og:url" content="http://mod-synth.io" />
-        <meta property="og:image" content="http://mod-synth.io/img/facebook.png" />
-        <meta property="og:image:width" content="256" />
-        <meta property="og:image:height" content="256" />
-        <meta property="og:description" content="MOD is an experiment where you can create your own modular synthesizer, or emulate different synths by simply drag and drop components." />
-        <meta property="og:site_name" content="MOD Synth"/>
+    <meta property="og:title" content="MOD Synth" />
+    <meta property="og:url" content="http://mod-synth.io" />
+    <meta property="og:image" content="http://mod-synth.io/img/facebook.png" />
+    <meta property="og:image:width" content="256" />
+    <meta property="og:image:height" content="256" />
+    <meta
+      property="og:description"
+      content="MOD is an experiment where you can create your own modular synthesizer, or emulate different synths by simply drag and drop components."
+    />
+    <meta property="og:site_name" content="MOD Synth" />
 
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:site" content="@modsynth_io" />
-        <meta name="twitter:creator" content="@modsynth_io" />
-        <meta name="twitter:url" content="http://mod-synth.io/" />
-        <meta name="twitter:title" content="MOD Synth" />
-        <meta name="twitter:description" content="MOD is an experiment where you can create your own modular synthesizer, or emulate different synths by simply drag and drop components." />
-        <meta name="twitter:image" content="http://mod-synth.io/img/twitter.png" />
-        <meta name="twitter:image:width" content="256" />
-        <meta name="twitter:image:height" content="256" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@modsynth_io" />
+    <meta name="twitter:creator" content="@modsynth_io" />
+    <meta name="twitter:url" content="http://mod-synth.io/" />
+    <meta name="twitter:title" content="MOD Synth" />
+    <meta
+      name="twitter:description"
+      content="MOD is an experiment where you can create your own modular synthesizer, or emulate different synths by simply drag and drop components."
+    />
+    <meta name="twitter:image" content="http://mod-synth.io/img/twitter.png" />
+    <meta name="twitter:image:width" content="256" />
+    <meta name="twitter:image:height" content="256" />
 
-        <link href="/css/app.min.css" type="text/css" rel="stylesheet" />
-    </head>
-    <body>
-        <noscript>
-            <p>Please enable Javascript on your browser</p>
-        </noscript>
-        <p style="position:absolute;top:-1000px;font-family:'letter_gothic_fsregular';">mod</p><p style="position:absolute;top:-1000px;font-family:'sofia_prolight';">synth</p>
-        <script src='//www.gstatic.com/firebasejs/3.1.0/firebase.js'></script>
-        <script src="/js/vendors.min.js"></script>
-        <script src="/js/app.min.js"></script>
-        <script>
-            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    <link href="/css/app.min.css" type="text/css" rel="stylesheet" />
+  </head>
+  <body>
+    <noscript>
+      <p>Please enable Javascript on your browser</p>
+    </noscript>
+    <p
+      style="position:absolute;top:-1000px;font-family:'letter_gothic_fsregular';"
+    >
+      mod
+    </p>
+    <p style="position:absolute;top:-1000px;font-family:'sofia_prolight';">
+      synth
+    </p>
+    <script src="//www.gstatic.com/firebasejs/3.1.0/firebase.js"></script>
+    <script src="/js/vendors.min.js"></script>
+    <script src="/js/app.min.js"></script>
+    <script>
+      ;(function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r
+        ;(i[r] =
+          i[r] ||
+          function () {
+            ;(i[r].q = i[r].q || []).push(arguments)
+          }),
+          (i[r].l = 1 * new Date())
+        ;(a = s.createElement(o)), (m = s.getElementsByTagName(o)[0])
+        a.async = 1
+        a.src = g
+        m.parentNode.insertBefore(a, m)
+      })(
+        window,
+        document,
+        'script',
+        '//www.google-analytics.com/analytics.js',
+        'ga'
+      )
 
-            ga('create', 'UA-61114277-3', 'auto');
-            ga('send', 'pageview');
-        </script>
-    </body>
+      ga('create', 'UA-61114277-3', 'auto')
+      ga('send', 'pageview')
+    </script>
+  </body>
 </html>

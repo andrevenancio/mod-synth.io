@@ -2,13 +2,10 @@
 do me = ->
 
     args = [
-        '%c MOD%cSYNTH \n',
+        '\n\n%c MOD%cSYNTH \n\n',
         'background: #000000; color: #3a3a3a; font-size: x-large;'
         'background: #3a3a3a; color: #000000; font-size: x-large;'
-        '\nDEVELOPMENT\nhttp://twitter.com/andrevenancio'
-        '\n\nDESIGN\nhttp://twitter.com/janoskoos'
-        '\n\nFollow us on twitter for new updates!\nhttp://twitter.com/modsynth_io'
-        '\n\n\nwe support open source:\nhttps://github.com/andrevenancio/mod-synth.io'
+        '\nhttps://github.com/andrevenancio/mod-synth.io\n\n'
     ]
     console.log.apply console, args
 

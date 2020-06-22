@@ -21,7 +21,7 @@ class MidiPannel extends Pannel
         @description.scale.x = @description.scale.y = 0.5
         @description.position.x = AppData.PADDING
         @description.position.y = @title.y + @title.height + AppData.PADDING
-        @addChild @description
+        @addChild @description 
 
     onMidiStateChange: (e) =>
         # add/remove from controllers objects

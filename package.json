@@ -10,10 +10,9 @@
   },
   "scripts": {
     "prestart": "npm run copy-static-files",
-    "start": "tsc --build",
+    "start": "tsc --watch",
     "prebuild": "npm run copy-static-files",
     "build": "tsc --build",
-    "build-sass": "copyfiles -u 2 source/_static/**/* source/_static/**/**/* source/_static/* deploy/",
     "copy-static-files": "copyfiles -u 2 source/_static/**/* source/_static/**/**/* source/_static/* deploy/",
     "serve": "node ./server.js",
     "heroku-postbuild": "npm run build",

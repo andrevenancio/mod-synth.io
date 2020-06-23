@@ -11,8 +11,7 @@
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "noEmit": true,
     "outDir": "deploy/js"
   },
-  "include": ["source/app/**/*"]
+  "include": ["source/app"]
 }

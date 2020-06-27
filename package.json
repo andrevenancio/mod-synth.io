@@ -11,11 +11,13 @@
   "scripts": {
     "start": "grunt dev",
     "build": "grunt",
-    "serve": "node ./server.js",
+    "serve": "node ./server/index.js",
     "heroku-postbuild": "npm run build",
     "heroku-serve": "npm run serve"
   },
   "dependencies": {
+    "@hapi/hapi": "^19.1.1",
+    "@hapi/inert": "^6.0.1",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
     "express": "^4.17.1",

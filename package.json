@@ -8,6 +8,9 @@
     "type": "git",
     "url": "git@github.com:andrevenancio/mod-synth.io.git"
   },
+  "engines": {
+    "node": "16.x"
+  },
   "scripts": {
     "start": "grunt dev",
     "build": "grunt",
